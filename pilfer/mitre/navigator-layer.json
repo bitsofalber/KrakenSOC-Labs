@@ -1,0 +1,13 @@
+{
+  "name": "Pilfer",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Insider USB data theft (Splunk) — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1052.001", "score": 100, "comment": "Exfiltration over USB" },
+    { "techniqueID": "T1005", "score": 80, "comment": "Data from Local System (sensitive files)" },
+    { "techniqueID": "T1074.001", "score": 70, "comment": "Local Data Staging (Compress-Archive)" },
+    { "techniqueID": "T1052", "score": 60, "comment": "Exfiltration Over Physical Medium" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

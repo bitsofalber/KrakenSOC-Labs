@@ -1,0 +1,7 @@
+type,value,context
+file,cryptolock.exe,Binario del ransomware (en %TEMP%)
+file,HOW_TO_DECRYPT.html,Nota de rescate dejada en cada carpeta
+pattern,*.cryptolock,Extensión de los ficheros cifrados
+host,NW-WKS-018,Endpoint paciente cero
+command,vssadmin delete shadows,Borrado de shadow copies (T1490)
+command,bcdedit /set recoveryenabled no,Inhibir recuperación (T1490)

@@ -1,0 +1,127 @@
+# SFRS manifest — Cryptolock. Validado contra ../schema/manifest.schema.json.
+# Lab de clase "interactive" (SFRS §11): expone Splunk Web. SOLO amd64 (Splunk).
+spec_version: "1.0.0"
+
+id: cryptolock
+title: "Cryptolock"
+version: "1.0.0"
+difficulty: advanced
+estimated_duration: 75
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "SIEM"
+  - "Splunk"
+  - "SPL"
+  - "Incident Response"
+  - "Ransomware Analysis"
+  - "Threat Hunting"
+categories:
+  - "SIEM / Threat Hunting"
+tags:
+  - "splunk"
+  - "spl"
+  - "ransomware"
+  - "incident-response"
+  - "sysmon"
+  - "northwind"
+
+mitre:
+  tactics:
+    - "TA0040 Impact"
+    - "TA0005 Defense Evasion"
+    - "TA0002 Execution"
+  techniques:
+    - "T1486"        # Data Encrypted for Impact
+    - "T1490"        # Inhibit System Recovery
+    - "T1489"        # Service Stop
+    - "T1562.001"    # Impair Defenses: Disable or Modify Tools
+    - "T1204.002"    # User Execution: Malicious File
+
+attack_chain:
+  - "Una macro de Office lanza el ransomware (cryptolock.exe) en un endpoint."
+  - "Borra las shadow copies e inhibe la recuperación de Windows (vssadmin, wmic, bcdedit, wbadmin)."
+  - "Para el antivirus y servicios (taskkill, net stop, sc stop)."
+  - "Cifra masivamente los ficheros (extensión .cryptolock) y deja notas de rescate (HOW_TO_DECRYPT.html)."
+
+runtime:
+  containers:
+    - name: splunk
+      image: "splunk/splunk:9.3.2"
+      role: "siem"
+      healthcheck: true
+    - name: forge
+      image: "ghcr.io/bitsofalber/cryptolock-forge"
+      role: "data-generator"
+      healthcheck: true
+  ports:
+    - "8000:8000"
+  supported_platforms:
+    - "linux/amd64"
+  docker_images:
+    - "splunk/splunk:9.3.2"
+    - "python:3.12-slim"
+  minimum_requirements:
+    ram_mb: 4096
+    disk_mb: 8192
+    cpus: 2
+
+ioc:
+  - type: file
+    value: "cryptolock.exe"
+    note: "Binario del ransomware."
+  - type: file
+    value: "HOW_TO_DECRYPT.html"
+    note: "Nota de rescate."
+  - type: pattern
+    value: "*.cryptolock"
+    note: "Extensión de los ficheros cifrados."
+  - type: host
+    value: "NW-WKS-018"
+    note: "Endpoint paciente cero."
+telemetry:
+  - "Sysmon (EventID 1 process, EventID 11 file create)"
+evidence:
+  - "siem"
+
+questions:
+  - id: "Q1"
+    title: "¿Cuántos ficheros se cifraron?"
+  - id: "Q2"
+    title: "¿Qué comando borró las shadow copies?"
+  - id: "Q3"
+    title: "¿Cuál es el proceso del ransomware?"
+  - id: "Q4"
+    title: "¿Cómo se llama la nota de rescate?"
+  - id: "Q5"
+    title: "¿Qué comando inhibió la recuperación de Windows?"
+  - id: "Q6"
+    title: "¿Cuál es el host paciente cero?"
+  - id: "Q7"
+    title: "¿Qué técnica MITRE describe el cifrado para impacto?"
+  - id: "Q8"
+    title: "Recupera la flag del comando ofuscado."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "Ransomware Detection & Response"
+    - "SPL Fundamentals"
+  academy_modules:
+    - "Incident Response"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L2 → L3"
+  certifications:
+    - "Splunk Core Certified User"
+  external:
+    - "https://attack.mitre.org/techniques/T1486/"
+    - "https://attack.mitre.org/techniques/T1490/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Un navegador web (para Splunk Web)"

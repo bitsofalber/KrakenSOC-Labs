@@ -1,0 +1,32 @@
+title: Shadow Copy Deletion — Ransomware Inhibit Recovery
+id: 9c1a2e40-8b3d-4f22-a7c1-cryptolock001
+status: experimental
+description: >
+  Detecta el borrado de instantáneas de volumen (shadow copies) y la inhibición
+  de la recuperación de Windows, comportamiento típico de ransomware antes de
+  cifrar (MITRE ATT&CK T1490).
+references:
+  - https://attack.mitre.org/techniques/T1490/
+author: KrakenSOC
+date: 2026/07/08
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains:
+      - 'delete shadows'
+      - 'shadowcopy delete'
+      - 'recoveryenabled no'
+      - 'delete catalog'
+  condition: selection
+fields:
+  - Computer
+  - User
+  - CommandLine
+falsepositives:
+  - Herramientas de backup mal configuradas (revisar el proceso padre)
+level: critical
+tags:
+  - attack.impact
+  - attack.t1490

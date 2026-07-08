@@ -1,0 +1,30 @@
+title: Sensitive File Copied to Removable USB Drive
+id: 2f8c1d40-5a9e-4b22-9c1a-pilfer000001
+status: experimental
+description: >
+  Detecta la copia de ficheros a una unidad extraíble (USB) poco después de
+  reconocerse el dispositivo, indicio de exfiltración por medio físico / insider
+  (MITRE ATT&CK T1052.001).
+references:
+  - https://attack.mitre.org/techniques/T1052/001/
+author: KrakenSOC
+date: 2026/07/08
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    TargetFilename|startswith:
+      - 'E:\'
+      - 'F:\'
+  condition: selection
+fields:
+  - Computer
+  - User
+  - TargetFilename
+falsepositives:
+  - Copias de seguridad legítimas a USB autorizados
+level: high
+tags:
+  - attack.exfiltration
+  - attack.t1052.001

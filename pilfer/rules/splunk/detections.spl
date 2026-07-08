@@ -1,0 +1,22 @@
+# Pilfer — SPL de detección de robo de datos por insider / USB (índice northwind).
+
+# 1) Dispositivo USB de almacenamiento reconocido — T1052.001
+index=northwind sourcetype=WinEventLog:Security EventCode=6416 Device_Description="*USB*"
+| table _time, Computer, Account_Name, Device_Description, Device_ID
+
+# 2) Copia de ficheros a una unidad extraíble (E:/F:) — T1052.001
+index=northwind sourcetype=Sysmon EventID=11 TargetFilename="E:\\*"
+| stats count values(TargetFilename) as ficheros by Computer, User
+
+# 3) Acceso a ficheros sensibles — T1005
+index=northwind sourcetype=WinEventLog:Security EventCode=4663
+  Object_Name IN ("*payroll*","*salaries*","*customer*","*contracts*")
+| table _time, Computer, Account_Name, Object_Name
+
+# 4) Estacionamiento de datos con Compress-Archive — T1074.001
+index=northwind sourcetype=Sysmon EventID=1 CommandLine="*Compress-Archive*"
+| table _time, Computer, User, CommandLine
+
+# 5) Correlación: mismo usuario/host con USB + copia + staging (insider)
+index=northwind (sourcetype=WinEventLog:Security EventCode=6416) OR (sourcetype=Sysmon EventID=11 TargetFilename="E:\\*")
+| stats values(sourcetype) count by Computer, coalesce(Account_Name,User)

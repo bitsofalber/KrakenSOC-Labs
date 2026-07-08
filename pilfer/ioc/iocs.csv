@@ -1,0 +1,7 @@
+type,value,context
+account,r.king,Insider (empleado saliente que roba los datos)
+host,NW-WKS-020,Estación del insider
+device,SanDisk Ultra USB,Unidad USB usada para la exfiltración (E:)
+file,payroll_Q3.csv,Fichero más sensible robado (nóminas)
+pattern,E:\ file writes,Copia de ficheros a la unidad extraíble (T1052.001)
+command,Compress-Archive,Estacionamiento de los datos antes de exfiltrar (T1074.001)

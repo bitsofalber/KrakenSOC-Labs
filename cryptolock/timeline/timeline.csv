@@ -1,0 +1,6 @@
+step,phase,description,mitre
+1,execution,Una macro de Office lanza cryptolock.exe,T1204.002
+2,defense-evasion,vssadmin/wmic borran shadow copies; bcdedit/wbadmin inhiben recuperación,T1490
+3,defense-evasion,taskkill/net stop paran el antivirus y servicios,T1489
+4,impact,Cifrado masivo de ficheros (.cryptolock),T1486
+5,impact,Notas de rescate (HOW_TO_DECRYPT.html) en cada carpeta,T1486

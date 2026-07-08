@@ -1,0 +1,14 @@
+{
+  "name": "Cryptolock",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Ransomware detection hunt (Splunk) — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1486", "score": 100, "comment": "Data Encrypted for Impact" },
+    { "techniqueID": "T1490", "score": 90, "comment": "Inhibit System Recovery (vssadmin/bcdedit)" },
+    { "techniqueID": "T1489", "score": 70, "comment": "Service Stop (AV)" },
+    { "techniqueID": "T1562.001", "score": 70, "comment": "Disable Tools (taskkill Defender)" },
+    { "techniqueID": "T1204.002", "score": 50, "comment": "User Execution: Malicious File" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

@@ -1,0 +1,126 @@
+# SFRS manifest — Pilfer. Validado contra ../schema/manifest.schema.json.
+# Lab de clase "interactive" (SFRS §11): expone Splunk Web. SOLO amd64 (Splunk).
+spec_version: "1.0.0"
+
+id: pilfer
+title: "Pilfer"
+version: "1.0.0"
+difficulty: intermediate
+estimated_duration: 55
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "SIEM"
+  - "Splunk"
+  - "SPL"
+  - "Insider Threat"
+  - "Data Exfiltration Analysis"
+  - "Threat Hunting"
+categories:
+  - "SIEM / Threat Hunting"
+tags:
+  - "splunk"
+  - "spl"
+  - "insider-threat"
+  - "usb"
+  - "exfiltration"
+  - "northwind"
+
+mitre:
+  tactics:
+    - "TA0010 Exfiltration"
+    - "TA0009 Collection"
+  techniques:
+    - "T1052.001"    # Exfiltration over USB
+    - "T1005"        # Data from Local System
+    - "T1074.001"    # Local Data Staging
+    - "T1052"        # Exfiltration Over Physical Medium
+
+attack_chain:
+  - "Un empleado saliente (r.king) conecta una unidad USB en su estación."
+  - "Accede a ficheros sensibles (nóminas, cartera de clientes, contratos)."
+  - "Los comprime para estacionarlos (Compress-Archive)."
+  - "Copia los ficheros y el zip a la unidad USB (E:) y se los lleva."
+
+runtime:
+  containers:
+    - name: splunk
+      image: "splunk/splunk:9.3.2"
+      role: "siem"
+      healthcheck: true
+    - name: forge
+      image: "ghcr.io/bitsofalber/pilfer-forge"
+      role: "data-generator"
+      healthcheck: true
+  ports:
+    - "8000:8000"
+  supported_platforms:
+    - "linux/amd64"
+  docker_images:
+    - "splunk/splunk:9.3.2"
+    - "python:3.12-slim"
+  minimum_requirements:
+    ram_mb: 4096
+    disk_mb: 8192
+    cpus: 2
+
+ioc:
+  - type: account
+    value: "r.king"
+    note: "Insider (empleado saliente)."
+  - type: host
+    value: "NW-WKS-020"
+    note: "Estación del insider."
+  - type: device
+    value: "SanDisk Ultra USB"
+    note: "Unidad USB usada para la exfiltración (E:)."
+  - type: file
+    value: "payroll_Q3.csv"
+    note: "Fichero más sensible robado."
+telemetry:
+  - "WinEventLog:Security (6416 dispositivo externo, 4663 acceso a fichero)"
+  - "Sysmon (EventID 1 process, EventID 11 file create)"
+evidence:
+  - "siem"
+
+questions:
+  - id: "Q1"
+    title: "¿Qué usuario realizó el robo?"
+  - id: "Q2"
+    title: "¿Qué letra de unidad tiene el USB?"
+  - id: "Q3"
+    title: "¿Cuántos ficheros se copiaron al USB?"
+  - id: "Q4"
+    title: "¿Qué fichero más sensible se robó?"
+  - id: "Q5"
+    title: "¿En qué host ocurrió?"
+  - id: "Q6"
+    title: "¿Qué técnica MITRE describe la exfiltración por USB?"
+  - id: "Q7"
+    title: "¿Qué cmdlet usó para comprimir/estacionar los datos?"
+  - id: "Q8"
+    title: "Recupera la flag del comando ofuscado."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "Insider Threat & Data Exfiltration Detection"
+    - "SPL Fundamentals"
+  academy_modules:
+    - "Insider Threat"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1 → L2"
+  certifications:
+    - "Splunk Core Certified User"
+  external:
+    - "https://attack.mitre.org/techniques/T1052/001/"
+    - "https://attack.mitre.org/techniques/T1074/001/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Un navegador web (para Splunk Web)"

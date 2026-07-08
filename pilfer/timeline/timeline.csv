@@ -1,0 +1,5 @@
+step,phase,description,mitre
+1,collection,r.king conecta una unidad USB (6416),T1052.001
+2,collection,Accede a ficheros sensibles: nóminas, clientes, contratos (4663),T1005
+3,collection,Comprime los datos con Compress-Archive (staging),T1074.001
+4,exfiltration,Copia los ficheros y el zip a la unidad USB (E:),T1052.001

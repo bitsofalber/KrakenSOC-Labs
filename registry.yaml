@@ -50,6 +50,20 @@ labs:
     difficulty: intermediate
     categories: ["SIEM / Threat Hunting"]
 
+  - id: cryptolock
+    status: available
+    path: ./cryptolock
+    title: "Cryptolock"
+    difficulty: advanced
+    categories: ["SIEM / Threat Hunting"]
+
+  - id: pilfer
+    status: available
+    path: ./pilfer
+    title: "Pilfer"
+    difficulty: intermediate
+    categories: ["SIEM / Threat Hunting"]
+
   - id: silent-harvest
     status: available
     path: ./silent-harvest

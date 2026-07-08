@@ -1,0 +1,25 @@
+# Cryptolock — SPL de detección de ransomware (índice northwind).
+
+# 1) Borrado de shadow copies / inhibición de recuperación — T1490
+index=northwind sourcetype=Sysmon EventID=1
+  (CommandLine="*delete shadows*" OR CommandLine="*shadowcopy delete*"
+   OR CommandLine="*bcdedit*recoveryenabled no*" OR CommandLine="*wbadmin*delete catalog*")
+| table _time, Computer, User, CommandLine
+
+# 2) Cifrado masivo: muchas creaciones de fichero con la misma extensión — T1486
+index=northwind sourcetype=Sysmon EventID=11 TargetFilename="*.cryptolock"
+| stats count dc(TargetFilename) as ficheros by Computer
+| where count > 20
+
+# 3) Nota de rescate creada en varias carpetas
+index=northwind sourcetype=Sysmon EventID=11 TargetFilename="*HOW_TO_DECRYPT*"
+| stats count values(TargetFilename) by Computer
+
+# 4) Parada del antivirus / servicios — T1489 / T1562.001
+index=northwind sourcetype=Sysmon EventID=1
+  (CommandLine="*taskkill*MsMpEng*" OR CommandLine="*net*stop*Defender*" OR CommandLine="*sc*stop*")
+| table _time, Computer, User, CommandLine
+
+# 5) Paciente cero: proceso del ransomware
+index=northwind sourcetype=Sysmon EventID=1 Image="*cryptolock.exe"
+| stats min(_time) as first by Computer, Image, ParentImage

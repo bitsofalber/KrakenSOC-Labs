@@ -1,0 +1,54 @@
+# Overwatch — SIEM interactivo (SFRS "Interactive Lab").
+# Levanta un Splunk REAL con el dataset de la campaña ya indexado. El alumno
+# abre Splunk Web en http://localhost:8000 e investiga con SPL de verdad.
+#
+#   - splunk : Splunk Enterprise (imagen oficial). HEC habilitado por env.
+#   - forge  : crea el índice 'northwind' (REST), genera el dataset multi-fuente
+#              y lo ingesta por HEC; luego espera.
+#
+# El ALUMNO hace PULL del forge desde GHCR (multi-arch) y de splunk desde Docker
+# Hub — no compila nada. Mantenedores pueden construir el forge en local con el
+# override:  docker compose -f docker-compose.yml -f docker-compose.build.yml build
+
+services:
+  splunk:
+    image: splunk/splunk:9.3.2
+    # La imagen oficial de Splunk es SOLO amd64. En Intel/AMD corre nativa; en
+    # Apple Silicon / ARM corre bajo emulación (Docker Desktop + Rosetta/QEMU):
+    # funciona, pero arranca más lento y usa más RAM. doctor.sh lo avisa.
+    platform: linux/amd64
+    container_name: ${LAB_ID:-cryptolock}-splunk
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_PASSWORD=${SPLUNK_PASSWORD:-Changeme123!}
+      - SPLUNK_HEC_TOKEN=5c0ver-w4tc-hlab-t0k3-nnorthw1nd00
+    ports:
+      - "${SPLUNK_WEB_PORT:-8000}:8000"
+    # Usa el healthcheck integrado de la imagen splunk/splunk (comprueba splunkd).
+    # El índice 'northwind' lo crea el forge vía REST; HEC lo habilita SPLUNK_HEC_TOKEN.
+    networks: [labnet]
+
+  forge:
+    image: ghcr.io/bitsofalber/cryptolock-forge:latest
+    container_name: ${LAB_ID:-cryptolock}-forge
+    environment:
+      - HEC_URL=https://splunk:8088/services/collector/event
+      - HEC_TOKEN=5c0ver-w4tc-hlab-t0k3-nnorthw1nd00
+      - SPLUNK_MGMT_URL=https://splunk:8089
+      - SPLUNK_USER=admin
+      - SPLUNK_PASSWORD=${SPLUNK_PASSWORD:-Changeme123!}
+      - SPLUNK_INDEX=northwind
+      - FORGE_SEED=${FORGE_SEED:-1337}
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/forge_done"]
+      interval: 5s
+      timeout: 3s
+      retries: 40
+    depends_on:
+      splunk:
+        condition: service_healthy
+    networks: [labnet]
+
+networks:
+  labnet:
+    name: ${LAB_ID:-cryptolock}-net

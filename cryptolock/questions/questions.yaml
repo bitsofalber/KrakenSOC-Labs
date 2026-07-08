@@ -1,0 +1,34 @@
+lab: cryptolock
+questions:
+  - id: Q1
+    prompt: "¿Cuántos ficheros se cifraron (creación de fichero con extensión .cryptolock)?"
+    type: number
+    points: 100
+  - id: Q2
+    prompt: "¿Qué comando (utilidad) borró las instantáneas de volumen (shadow copies)?"
+    type: short_text
+    points: 100
+  - id: Q3
+    prompt: "¿Cuál es el nombre del proceso ejecutable del ransomware?"
+    type: short_text
+    points: 100
+  - id: Q4
+    prompt: "¿Cómo se llama el fichero de la nota de rescate?"
+    type: short_text
+    points: 100
+  - id: Q5
+    prompt: "¿Qué utilidad de Windows se usó para inhibir la recuperación del sistema?"
+    type: short_text
+    points: 100
+  - id: Q6
+    prompt: "¿Cuál es el hostname del endpoint paciente cero (donde corre el ransomware)?"
+    type: short_text
+    points: 100
+  - id: Q7
+    prompt: "¿Qué técnica de MITRE ATT&CK describe el cifrado de datos para impacto? (formato Txxxx)"
+    type: short_text
+    points: 100
+  - id: Q8
+    prompt: "Decodifica el -EncodedCommand que ejecutó el ransomware y recupera la flag (NORTHWIND{...})."
+    type: flag
+    points: 300
