@@ -47,7 +47,7 @@
         "ports": { "type": "array", "items": { "type": "string" } },
         "supported_platforms": {
           "type": "array",
-          "minItems": 2,
+          "minItems": 1,
           "contains": { "enum": ["linux/amd64", "linux/arm64"] },
           "items": { "type": "string" }
         },

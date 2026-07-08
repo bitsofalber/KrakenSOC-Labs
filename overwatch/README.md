@@ -4,6 +4,7 @@
 ![duration](https://img.shields.io/badge/duration-90m-blue)
 ![SFRS](https://img.shields.io/badge/SFRS-1.0.0-6f42c1)
 ![class](https://img.shields.io/badge/class-interactive-9cf)
+![platform](https://img.shields.io/badge/platform-amd64%20only-orange)
 ![SIEM](https://img.shields.io/badge/SIEM-Splunk-black)
 
 > Official KrakenSOC Runtime Lab (interactive class). SOCForge owns the questions, XP and progress; this runtime owns a **real Splunk** with the campaign already indexed.
@@ -49,11 +50,12 @@ SIEM · Splunk · SPL · Threat Hunting · Incident Response · Log Correlation
 - **≥ 4 GB RAM (6 GB recommended on Apple Silicon), ≥ 8 GB disk**
 - A web browser for Splunk Web
 
-## Compatibility — important note on architecture
-The official **Splunk image is amd64-only**. This lab runs:
-- **Natively** on Intel/AMD (`linux/amd64`).
-- **Under emulation** on Apple Silicon / ARM (Docker Desktop + Rosetta/QEMU): it works, but Splunk takes a few minutes to boot and uses more RAM. Give Docker Desktop ≥ 6 GB.
-`./doctor.sh` detects your architecture and warns accordingly. The `forge` image is native multi-arch.
+## Compatibility — amd64 only
+This lab is **amd64 (x86_64) only**, on purpose: the official **Splunk container image is not published for ARM**, so there is no native ARM build to ship.
+- **Supported:** Intel/AMD (`linux/amd64`) — Splunk runs natively.
+- **Best-effort (unsupported):** Apple Silicon / ARM runs it **under emulation** (Docker Desktop + Rosetta/QEMU). It works, but Splunk boots slowly and uses more RAM — give Docker Desktop ≥ 6 GB. `./doctor.sh` will warn you.
+
+If you need a native-ARM SIEM lab, that would be a separate Elastic/OpenSearch edition — not this one.
 
 ## Quick Start
 ```bash

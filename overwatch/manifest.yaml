@@ -60,9 +60,12 @@ runtime:
       healthcheck: true
   ports:
     - "8000:8000"
+  # Lab SOLO amd64: la imagen oficial de Splunk no publica arm64. En Apple
+  # Silicon / ARM puede correr emulada (best-effort), pero no es plataforma
+  # soportada. SFRS §11 permite labs de una sola arquitectura para SIEMs cuya
+  # imagen upstream es single-arch.
   supported_platforms:
     - "linux/amd64"
-    - "linux/arm64"
   docker_images:
     - "splunk/splunk:9.3.2"
     - "python:3.12-slim"

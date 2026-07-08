@@ -29,13 +29,12 @@ else bad "Docker no está instalado. https://docs.docker.com/get-docker/"; fi
 if docker compose version >/dev/null 2>&1; then ok "Docker Compose v2 ($(docker compose version --short 2>/dev/null))"
 else bad "Falta Docker Compose v2 (plugin 'docker compose')."; fi
 
-# Arquitectura (AMD/ARM) — SFRS §7
+# Arquitectura — este lab es SOLO amd64 (la imagen de Splunk no existe en ARM).
 case "$(uname -m)" in
-  x86_64|amd64)        ok "Arquitectura: amd64 (Intel/AMD) — Splunk corre nativo";;
-  aarch64|arm64)       ok "Arquitectura: arm64 (Apple Silicon/ARM)"
-                       warn "La imagen de Splunk es solo amd64: aquí corre EMULADA (Docker Desktop/QEMU)."
-                       warn "Funciona, pero arranca más lento (varios minutos) y usa más RAM. Dale >=6GB a Docker.";;
-  *) bad "Arquitectura no soportada: $(uname -m). Solo amd64 y arm64.";;
+  x86_64|amd64)        ok "Arquitectura: amd64 (Intel/AMD) — plataforma soportada, Splunk corre nativo";;
+  aarch64|arm64)       warn "Arquitectura arm64: este lab es SOLO amd64 (Splunk no publica imagen ARM)."
+                       warn "Correrá EMULADO (Docker Desktop/QEMU): best-effort, no soportado — más lento y más RAM (>=6GB a Docker).";;
+  *) bad "Arquitectura no soportada: $(uname -m). Este lab requiere amd64.";;
 esac
 
 # Sistema operativo

@@ -223,7 +223,7 @@ Interactive labs follow the same contract with these additions:
 - **A generator, not shipped evidence.** A one-shot `forge`/ingest service creates the dataset **deterministically** (fixed seed) and loads it at deploy time (e.g. Splunk HEC). Answers stay stable across runs. `reset.sh` recreates a pristine dataset (`down -v` + up re-ingests).
 - **Readiness = platform healthy AND data loaded.** `verify.sh` passes only when the tool is healthy and the generator has finished (health-gated marker).
 - **Credentials.** `deploy.sh` prints the URL and login. Never commit real secrets; the flag stays baked-in-CI / decoy-in-repo (§8).
-- **Heavier footprint & upstream images.** SIEM images are large and may be **single-arch** (the official Splunk image is amd64-only). Pin `platform: linux/amd64` when needed; `doctor.sh` MUST warn that ARM runs under emulation. Raise `minimum_requirements` accordingly.
+- **Heavier footprint & upstream images.** SIEM images are large and may be **single-arch** (the official Splunk image is amd64-only). Such a lab is **exempt from the §7 both-platforms rule**: it declares only its supported platform in `manifest.runtime.supported_platforms` (a single entry is allowed for interactive labs), pins `platform: linux/amd64` in compose, and `doctor.sh` treats the other architecture as best-effort/unsupported (a clear WARN about emulation, not an OK). Raise `minimum_requirements` accordingly.
 
 Everything else (naming §2, structure §3, manifest §4, the five scripts §5, README §6, protected answers §8, registry §10) applies unchanged.
 
