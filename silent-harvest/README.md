@@ -70,7 +70,14 @@ cd KrakenSOC-Labs/silent-harvest
 ```
 
 ## Deployment
-`./deploy.sh` checks the environment, brings up the three containers, and waits until the capture is running and the exfiltration has completed. The evidence lands in `pcaps/dns-exfil.pcap`. No manual Docker commands required.
+`./deploy.sh` checks the environment, **pulls the prebuilt multi-arch images from GHCR**
+(`ghcr.io/bitsofalber/silent-harvest-*` — no local compilation), brings up the three containers,
+and waits until the capture is running and the exfiltration has completed. The evidence lands in
+`pcaps/dns-exfil.pcap`. No manual Docker commands required.
+
+> Maintainers who want to build locally instead of pulling:
+> `docker compose -f docker-compose.yml -f docker-compose.build.yml build`
+> (local builds use a decoy dataset; the real payload is injected only in CI).
 
 ## Validation
 ```bash
