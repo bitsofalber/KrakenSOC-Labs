@@ -1,0 +1,35 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aquí — las gestiona KrakenSOC.
+lab: baited
+questions:
+  - id: Q1
+    prompt: "¿Cuántos correos fallan la autenticación DMARC (dmarc_result=fail)?"
+    type: number
+    points: 100
+  - id: Q2
+    prompt: "¿Cuántos correos se bloquearon o se pusieron en cuarentena (blocked + quarantined)?"
+    type: number
+    points: 100
+  - id: Q3
+    prompt: "¿Qué dominio remitente typosquat (suplanta a Northwind) consiguió que su phishing SE ENTREGARA?"
+    type: short_text
+    points: 100
+  - id: Q4
+    prompt: "¿Qué empleado (destinatario) recibió ese phishing entregado?"
+    type: short_text
+    points: 100
+  - id: Q5
+    prompt: "¿Qué dirección IP origen concentra la campaña de phishing?"
+    type: short_text
+    points: 100
+  - id: Q6
+    prompt: "¿Cuál es el hash del adjunto malicioso del correo que se entregó?"
+    type: short_text
+    points: 100
+  - id: Q7
+    prompt: "¿Qué (sub)técnica de MITRE ATT&CK describe el phishing con un enlace malicioso? (formato Txxxx.xxx)"
+    type: short_text
+    points: 100
+  - id: Q8
+    prompt: "La URL maliciosa lleva un parámetro token en base64. Decodifícalo y recupera la flag (NORTHWIND{...})."
+    type: flag
+    points: 300

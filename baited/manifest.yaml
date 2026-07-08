@@ -1,0 +1,125 @@
+# SFRS manifest — Baited. Validado contra ../schema/manifest.schema.json.
+# Lab de clase "interactive" (SFRS §11): expone Splunk Web. SOLO amd64 (Splunk).
+spec_version: "1.0.0"
+
+id: baited
+title: "Baited"
+version: "1.0.0"
+difficulty: intermediate
+estimated_duration: 55
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "SIEM"
+  - "Splunk"
+  - "SPL"
+  - "Email Security"
+  - "Phishing Investigation"
+  - "Threat Hunting"
+categories:
+  - "SIEM / Threat Hunting"
+tags:
+  - "splunk"
+  - "spl"
+  - "phishing"
+  - "email-security"
+  - "spf-dkim-dmarc"
+  - "northwind"
+
+mitre:
+  tactics:
+    - "TA0001 Initial Access"
+    - "TA0043 Reconnaissance"
+  techniques:
+    - "T1566"        # Phishing
+    - "T1566.001"    # Spearphishing Attachment
+    - "T1566.002"    # Spearphishing Link
+    - "T1078"        # Valid Accounts
+
+attack_chain:
+  - "Una campaña de phishing golpea a Northwind con dominios remitentes typosquat que suplantan a Microsoft y a la propia Northwind."
+  - "Los correos fallan SPF/DKIM/DMARC, llevan URLs de credential harvesting por HTTP y adjuntos peligrosos (.html/.docm)."
+  - "El gateway bloquea o pone en cuarentena casi todos — pero uno se ENTREGA a s.buchanan."
+  - "s.buchanan hace clic y entrega sus credenciales: el acceso inicial que da pie a la intrusión."
+
+runtime:
+  containers:
+    - name: splunk
+      image: "splunk/splunk:9.3.2"
+      role: "siem"
+      healthcheck: true
+    - name: forge
+      image: "ghcr.io/bitsofalber/baited-forge"
+      role: "data-generator"
+      healthcheck: true
+  ports:
+    - "8000:8000"
+  supported_platforms:
+    - "linux/amd64"
+  docker_images:
+    - "splunk/splunk:9.3.2"
+    - "python:3.12-slim"
+  minimum_requirements:
+    ram_mb: 4096
+    disk_mb: 8192
+    cpus: 2
+
+ioc:
+  - type: domain
+    value: "northw1nd-systems.com"
+    note: "Typosquat de northwind — el phish que se entregó."
+  - type: domain
+    value: "micr0soft-support.com"
+    note: "Typosquat que suplanta a Microsoft."
+  - type: ipv4
+    value: "45.83.220.60"
+    note: "IP origen de la campaña de phishing."
+  - type: md5
+    value: "5d41402abc4b2a76b9719d911017c592"
+    note: "Adjunto del phish entregado (mailbox_verify.html)."
+telemetry:
+  - "Email gateway logs (SPF/DKIM/DMARC, URLs, adjuntos)"
+evidence:
+  - "siem"
+
+questions:
+  - id: "Q1"
+    title: "¿Cuántos correos fallan DMARC?"
+  - id: "Q2"
+    title: "¿Cuántos correos se bloquearon o pusieron en cuarentena?"
+  - id: "Q3"
+    title: "¿Qué dominio typosquat consiguió entregar su phishing?"
+  - id: "Q4"
+    title: "¿Qué empleado recibió el phishing entregado?"
+  - id: "Q5"
+    title: "¿Qué IP origen tiene la campaña?"
+  - id: "Q6"
+    title: "¿Cuál es el hash del adjunto malicioso entregado?"
+  - id: "Q7"
+    title: "¿Qué técnica MITRE describe el phishing por enlace?"
+  - id: "Q8"
+    title: "Decodifica el token de la URL maliciosa y recupera la flag."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "Phishing Investigation & Email Authentication (SPF/DKIM/DMARC)"
+    - "SPL Fundamentals"
+  academy_modules:
+    - "Email Security"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1 → L2"
+  certifications:
+    - "Splunk Core Certified User"
+  external:
+    - "https://attack.mitre.org/techniques/T1566/"
+    - "https://attack.mitre.org/techniques/T1566/002/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Un navegador web (para Splunk Web)"

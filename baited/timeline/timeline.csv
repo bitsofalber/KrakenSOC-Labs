@@ -1,0 +1,6 @@
+step,phase,description,mitre
+1,reconnaissance,El atacante registra dominios typosquat (micr0soft-support, northw1nd-systems),T1583.001
+2,initial-access,Envía correos de phishing masivos con URLs y adjuntos maliciosos,T1566
+3,initial-access,El gateway bloquea/cuarentena casi todos por fallo SPF/DKIM/DMARC,T1566.002
+4,initial-access,Un phish con enlace se ENTREGA a s.buchanan,T1566.002
+5,initial-access,s.buchanan hace clic y entrega credenciales; el atacante obtiene una cuenta válida,T1078

@@ -1,0 +1,14 @@
+{
+  "name": "Baited",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Phishing email investigation (Splunk) — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1566", "score": 100, "comment": "Phishing" },
+    { "techniqueID": "T1566.002", "score": 100, "comment": "Spearphishing Link (delivered)" },
+    { "techniqueID": "T1566.001", "score": 80, "comment": "Spearphishing Attachment" },
+    { "techniqueID": "T1583.001", "score": 60, "comment": "Acquire Infrastructure: Domains (typosquat)" },
+    { "techniqueID": "T1078", "score": 60, "comment": "Valid Accounts (resulting compromise)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

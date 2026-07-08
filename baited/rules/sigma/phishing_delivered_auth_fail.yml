@@ -1,0 +1,32 @@
+title: Phishing Email Delivered Despite Authentication Failure
+id: 6a1e3c90-7b2d-4f11-9d4c-baited000001
+status: experimental
+description: >
+  Detecta un correo que se ENTREGA al usuario a pesar de fallar SPF/DKIM/DMARC,
+  con una URL insegura (HTTP). Señal fuerte de phishing que evadió los filtros
+  (MITRE ATT&CK T1566.002).
+references:
+  - https://attack.mitre.org/techniques/T1566/002/
+author: KrakenSOC
+date: 2026/07/08
+logsource:
+  product: email
+  service: gateway
+detection:
+  selection_delivered:
+    action: 'delivered'
+  selection_authfail:
+    dmarc_result: 'fail'
+  selection_url:
+    url|startswith: 'http://'
+  condition: selection_delivered and selection_authfail and selection_url
+fields:
+  - sender_domain
+  - recipient
+  - url
+falsepositives:
+  - Remitentes legítimos mal configurados (validar el dominio y la reputación)
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1566.002

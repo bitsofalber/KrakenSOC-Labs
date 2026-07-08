@@ -1,0 +1,7 @@
+type,value,context
+domain,northw1nd-systems.com,Typosquat de northwind — phishing entregado a s.buchanan
+domain,micr0soft-support.com,Typosquat que suplanta a Microsoft
+domain,0ffice365-login.com,Typosquat de Office 365
+ipv4,45.83.220.60,IP origen de la campaña de phishing
+md5,5d41402abc4b2a76b9719d911017c592,Adjunto del phish entregado (mailbox_verify.html)
+pattern,spf=fail dkim=fail dmarc=fail,Correos que fallan las 3 autenticaciones (phishing)

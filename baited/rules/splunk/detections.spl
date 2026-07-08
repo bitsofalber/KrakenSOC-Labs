@@ -1,0 +1,36 @@
+# Baited — SPL de investigación de phishing (índice northwind).
+# Fuente: sourcetype=email:gateway.
+
+# 1) Phishing score: puntúa cada correo por señales de riesgo — T1566
+index=northwind sourcetype=email:gateway
+| eval score=0
+| eval score=score+if(spf_result=="fail",1,0)
+| eval score=score+if(dkim_result=="fail",1,0)
+| eval score=score+if(dmarc_result=="fail",1,0)
+| eval score=score+if(match(url,"^http://"),1,0)
+| eval score=score+if(match(attachment_name,"(?i)\.docm$|\.html$"),1,0)
+| eval severity=case(score>=5,"Critical",score==4,"High",score==3,"Medium",true(),"Low")
+| table _time, sender_email, sender_domain, recipient, subject, url, attachment_name, score, severity, action
+| sort - score
+
+# 2) Fallo de autenticación de correo (posible suplantación) — T1566
+index=northwind sourcetype=email:gateway (spf_result=fail OR dkim_result=fail OR dmarc_result=fail)
+| stats count by sender_domain, source_ip, action
+| sort - count
+
+# 3) Phishing ENTREGADO pese a fallar la autenticación (lo más peligroso)
+index=northwind sourcetype=email:gateway action=delivered dmarc_result=fail
+| table _time, sender_email, sender_domain, recipient, subject, url, attachment_hash
+
+# 4) URLs inseguras (credential harvesting por HTTP) — T1566.002
+index=northwind sourcetype=email:gateway url="http://*"
+| table _time, sender_domain, recipient, url, action
+
+# 5) Adjuntos peligrosos y sus hashes — T1566.001
+index=northwind sourcetype=email:gateway attachment_hash!="NA" attachment_name IN ("*.html","*.docm","*.hta")
+| stats values(attachment_name) count by attachment_hash
+
+# 6) Dominios typosquat: parecidos a marcas conocidas
+index=northwind sourcetype=email:gateway
+| regex sender_domain="(micr0soft|0ffice365|northw1nd|amaz0n)"
+| stats count by sender_domain, action

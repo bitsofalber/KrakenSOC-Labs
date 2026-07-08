@@ -43,6 +43,13 @@ labs:
     difficulty: intermediate
     categories: ["SIEM / Threat Hunting"]
 
+  - id: baited
+    status: available
+    path: ./baited
+    title: "Baited"
+    difficulty: intermediate
+    categories: ["SIEM / Threat Hunting"]
+
   - id: silent-harvest
     status: available
     path: ./silent-harvest
