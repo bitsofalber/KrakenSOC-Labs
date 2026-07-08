@@ -1,0 +1,115 @@
+# SFRS manifest — Plain Sight. Validado contra ../schema/manifest.schema.json.
+spec_version: "1.0.0"
+
+id: plain-sight
+title: "Plain Sight"
+version: "1.0.0"
+difficulty: beginner
+estimated_duration: 30
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "HTTP"
+  - "Credential Analysis"
+categories:
+  - "Network Forensics"
+tags:
+  - "http"
+  - "cleartext"
+  - "credentials"
+  - "wireshark"
+  - "northwind"
+
+mitre:
+  tactics:
+    - "TA0006 Credential Access"
+    - "TA0009 Collection"
+  techniques:
+    - "T1040"        # Network Sniffing
+    - "T1071.001"    # Application Layer Protocol: Web Protocols
+    - "T1078"        # Valid Accounts
+
+attack_chain:
+  - "Un empleado de Northwind (Sales) usa un portal interno legacy que sigue en HTTP sin cifrar."
+  - "La estación de trabajo envía usuario y contraseña en un POST /login en claro."
+  - "El portal responde con un token de API/sesión, también en claro."
+  - "Un atacante con acceso a la red captura el tráfico y obtiene credenciales y token sin descifrar nada."
+
+runtime:
+  containers:
+    - name: portal
+      image: "ghcr.io/bitsofalber/plain-sight-portal"
+      role: "legacy-cleartext-web"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/plain-sight-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: workstation
+      image: "ghcr.io/bitsofalber/plain-sight-workstation"
+      role: "employee-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+
+ioc:
+  - type: uri
+    value: "POST /login"
+    note: "Autenticación con credenciales en claro sobre HTTP."
+  - type: credential
+    value: "s.buchanan"
+    note: "Usuario capturado en el cuerpo del POST."
+telemetry:
+  - "HTTP traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+
+questions:
+  - id: "Q1"
+    title: "¿Qué protocolo/puerto transporta las credenciales en claro?"
+  - id: "Q2"
+    title: "¿Qué método y ruta HTTP realizan la autenticación?"
+  - id: "Q3"
+    title: "¿Qué nombre de usuario se envía al portal?"
+  - id: "Q4"
+    title: "¿Qué contraseña se envía en claro?"
+  - id: "Q5"
+    title: "¿Qué técnica MITRE ATT&CK describe la captura de credenciales de esta red?"
+  - id: "Q6"
+    title: "Recupera el token de API (la flag) devuelto tras el login."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "Cleartext Protocols & Credential Exposure"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1040/"
+    - "https://attack.mitre.org/techniques/T1071/001/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

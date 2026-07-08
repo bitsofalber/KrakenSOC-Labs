@@ -1,0 +1,16 @@
+# Plain Sight — reglas Suricata para credenciales en claro sobre HTTP
+# (T1040 Network Sniffing / T1071.001 Web Protocols)
+
+# 1) POST de login en claro con usuario y contraseña en el cuerpo
+alert http any any -> any any (msg:"KRAKENSOC Cleartext Credentials in HTTP POST /login"; \
+  flow:established,to_server; http.method; content:"POST"; \
+  http.uri; content:"/login"; \
+  http.request_body; content:"username="; nocase; content:"password="; nocase; \
+  classtype:policy-violation; \
+  metadata:mitre_technique T1040, mitre_tactic TA0006; sid:9100001; rev:1;)
+
+# 2) Token/sesión de API expuesto en claro en una respuesta HTTP
+alert http any any -> any any (msg:"KRAKENSOC Cleartext API token in HTTP response header"; \
+  flow:established,to_client; http.header; content:"X-Auth-Token|3a|"; nocase; \
+  classtype:policy-violation; \
+  metadata:mitre_technique T1071_001, mitre_tactic TA0009; sid:9100002; rev:1;)

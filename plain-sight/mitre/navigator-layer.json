@@ -1,0 +1,12 @@
+{
+  "name": "Plain Sight",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Cleartext HTTP credential capture lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1040", "score": 100, "comment": "Network Sniffing (credentials on the wire)" },
+    { "techniqueID": "T1071.001", "score": 80, "comment": "Application Layer Protocol: Web Protocols (HTTP)" },
+    { "techniqueID": "T1078", "score": 50, "comment": "Valid Accounts (captured portal credentials)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

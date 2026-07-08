@@ -1,0 +1,6 @@
+type,value,context
+uri,POST /login,Autenticación con credenciales en claro sobre HTTP
+credential,s.buchanan,Usuario capturado en el cuerpo del POST de login
+port,80/tcp,Portal interno legacy sirviendo HTTP sin cifrar
+header,X-Auth-Token,Token de API devuelto en claro por el portal tras el login
+cookie,api_token=,Cookie con el token de sesión enviada en claro

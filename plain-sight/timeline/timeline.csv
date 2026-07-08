@@ -1,0 +1,5 @@
+step,phase,description,mitre
+1,collection,Empleado navega por el portal interno legacy vía HTTP,T1071.001
+2,credential-access,Estación de trabajo envía usuario+contraseña en un POST /login en claro,T1078
+3,credential-access,Atacante captura el tráfico de la red y obtiene las credenciales,T1040
+4,collection,El portal devuelve el token de API/sesión en claro (cookie y cabecera),T1071.001

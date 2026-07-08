@@ -8,6 +8,13 @@ spec_version: "1.0.0"
 repo: https://github.com/bitsofalber/KrakenSOC-Labs
 
 labs:
+  - id: plain-sight
+    status: available
+    path: ./plain-sight
+    title: "Plain Sight"
+    difficulty: beginner
+    categories: ["Network Forensics"]
+
   - id: silent-harvest
     status: available
     path: ./silent-harvest

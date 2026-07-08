@@ -1,0 +1,10 @@
+# Override de mantenedor: construye las imágenes en local en vez de hacer pull.
+# Uso: docker compose -f docker-compose.yml -f docker-compose.build.yml build
+# (En local, el portal usa el DECOY de runtime/portal/seed/, no la flag real.)
+services:
+  portal:
+    build: ./runtime/portal
+  sniffer:
+    build: ./runtime/sniffer
+  workstation:
+    build: ./runtime/workstation

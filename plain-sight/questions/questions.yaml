@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aquí — las gestiona KrakenSOC.
+lab: plain-sight
+questions:
+  - id: Q1
+    prompt: "¿Qué protocolo de aplicación (y puerto) transporta las credenciales en claro?"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Qué método HTTP y ruta realizan la autenticación? (formato: METODO /ruta)"
+    type: short_text
+    points: 10
+  - id: Q3
+    prompt: "¿Qué nombre de usuario se envía al portal en el POST de login?"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "¿Qué contraseña viaja en claro en ese mismo POST?"
+    type: short_text
+    points: 20
+  - id: Q5
+    prompt: "¿Qué técnica de MITRE ATT&CK describe la captura de credenciales de la red? (formato Txxxx)"
+    type: short_text
+    points: 15
+  - id: Q6
+    prompt: "Recupera el token de API devuelto tras el login (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30
