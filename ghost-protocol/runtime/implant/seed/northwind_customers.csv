@@ -1,0 +1,11 @@
+customer_id,company,contact_name,email,phone,city,country,credit_line_eur
+NW-C-2001,Alfreds Futterkiste,Maria Anders,maria.anders@alfreds.example,+49-30-1234567,Berlin,DE,50000
+NW-C-2002,Around the Horn,Thomas Hardy,t.hardy@aroundthehorn.example,+44-20-5557788,London,UK,42000
+NW-C-2003,Bon app',Laurence Lebihan,l.lebihan@bonapp.example,+33-4-91224455,Marseille,FR,61000
+NW-C-2004,Ernst Handel,Roland Mendel,r.mendel@ernsthandel.example,+43-1-6641234,Graz,AT,88000
+NW-C-2005,Island Trading,Helen Bennett,h.bennett@island.example,+44-1534-556677,Cowes,UK,37000
+NW-C-2006,Königlich Essen,Philip Cramer,p.cramer@koenig.example,+49-89-9988776,Brandenburg,DE,54000
+NW-C-2007,Laughing Bacchus,Yoshi Tannamuri,y.tannamuri@bacchus.example,+1-604-5551122,Vancouver,CA,33000
+NW-C-2008,QUICK-Stop,Horst Kloss,h.kloss@quickstop.example,+49-521-4477889,Cunewalde,DE,120000
+NW-C-9999,__EXFIL_MARKER__,marker,marker@marker.example,000,marker,XX,0
+# NORTHWIND{th15_15_n0t_th3_r34l_fl4g}

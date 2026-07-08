@@ -1,0 +1,33 @@
+title: HTTP C2 Beacon — GhostClient Implant Check-ins
+id: 7a3d9f22-6b1c-4e88-a0d2-ghostprotocol01
+status: experimental
+description: >
+  Detecta el patrón de beaconing de un implante tipo malleable-C2 sobre HTTP:
+  check-ins periódicos a un endpoint fijo (/api/v2/status) con un User-Agent
+  distintivo y una cookie de sesión codificada. Indicativo de C2 (T1071.001).
+references:
+  - https://attack.mitre.org/techniques/T1071/001/
+  - https://attack.mitre.org/techniques/T1041/
+author: KrakenSOC
+date: 2026/07/08
+logsource:
+  category: proxy
+detection:
+  selection_beacon:
+    cs-uri-stem: '/api/v2/status'
+  selection_ua:
+    cs-User-Agent|contains: 'GhostClient/'
+  condition: selection_beacon or selection_ua
+fields:
+  - c-ip
+  - cs-host
+  - cs-User-Agent
+  - cs-uri-stem
+falsepositives:
+  - Clientes de API internos que consulten /api/v2/status legítimamente (revisar UA y periodicidad)
+level: high
+tags:
+  - attack.command_and_control
+  - attack.t1071.001
+  - attack.exfiltration
+  - attack.t1041

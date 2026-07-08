@@ -8,6 +8,13 @@ spec_version: "1.0.0"
 repo: https://github.com/bitsofalber/KrakenSOC-Labs
 
 labs:
+  - id: ghost-protocol
+    status: available
+    path: ./ghost-protocol
+    title: "Ghost Protocol"
+    difficulty: advanced
+    categories: ["Network Forensics"]
+
   - id: plain-sight
     status: available
     path: ./plain-sight

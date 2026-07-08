@@ -1,0 +1,65 @@
+# Ghost Protocol — HTTP C2 beacon & tasking runtime (SFRS-compliant).
+# 3 servicios: c2 (Team Server HTTP), implant (endpoint comprometido que baliza
+# y exfiltra) y sniffer (captura). El sniffer comparte el netns del c2 para ver
+# TODO el HTTP entrante y escribe la captura en ./pcaps/ghost-protocol.pcap
+# (la evidencia del alumno).
+#
+# El ALUMNO hace PULL de imágenes ya construidas en GHCR (manifest multi-arch:
+# linux/amd64 + linux/arm64) — no necesita compilar nada. Para construir en
+# local (mantenedores), usa el override:
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml build
+
+services:
+  c2:
+    image: ghcr.io/bitsofalber/ghost-protocol-c2:latest
+    container_name: ${LAB_ID:-ghost-protocol}-c2
+    environment:
+      - C2_DOMAIN=${C2_DOMAIN:-cdn-edge-sync.net}
+      - TASK_ON=${TASK_ON:-6}
+      - INSTRUCTOR_MODE=${INSTRUCTOR_MODE:-0}
+    volumes:
+      - ./pcaps:/pcaps
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:80/health')"]
+      interval: 4s
+      timeout: 3s
+      retries: 10
+    networks: [labnet]
+
+  sniffer:
+    image: ghcr.io/bitsofalber/ghost-protocol-sniffer:latest
+    container_name: ${LAB_ID:-ghost-protocol}-sniffer
+    # Comparte la pila de red del c2: tcpdump ve todo el HTTP que le llega.
+    network_mode: "service:c2"
+    volumes:
+      - ./pcaps:/pcaps
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /pcaps/ghost-protocol.pcap"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      - c2
+
+  implant:
+    image: ghcr.io/bitsofalber/ghost-protocol-implant:latest
+    container_name: ${LAB_ID:-ghost-protocol}-implant
+    environment:
+      - C2_HOST=c2
+      - C2_DOMAIN=${C2_DOMAIN:-cdn-edge-sync.net}
+      - BEACONS=${BEACONS:-12}
+      - BEACON_INTERVAL=${BEACON_INTERVAL:-3}
+      - START_DELAY=${START_DELAY:-6}
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/implant_done"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    depends_on:
+      - c2
+      - sniffer
+    networks: [labnet]
+
+networks:
+  labnet:
+    name: ${LAB_ID:-ghost-protocol}-net

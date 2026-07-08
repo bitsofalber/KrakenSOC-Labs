@@ -1,0 +1,10 @@
+# Override de mantenedor: construye las imágenes en local en vez de hacer pull.
+# Uso: docker compose -f docker-compose.yml -f docker-compose.build.yml build
+# (En local, el c2 usa el DECOY de runtime/c2/seed/, no el dataset real.)
+services:
+  c2:
+    build: ./runtime/c2
+  sniffer:
+    build: ./runtime/sniffer
+  implant:
+    build: ./runtime/implant

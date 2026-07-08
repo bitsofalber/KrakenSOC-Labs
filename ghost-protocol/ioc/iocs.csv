@@ -1,0 +1,7 @@
+type,value,context
+domain,cdn-edge-sync.net,Dominio del C2 (cabecera Host de los beacons)
+uri,/api/v2/status,Endpoint de check-in del beacon (GET periódico)
+uri,/api/v2/submit,Endpoint de exfiltración (POST con datos base64+gzip)
+user_agent,GhostClient/2.3,User-Agent distintivo del implante
+pattern,SESSIONID=<base64>,Cookie de sesión del implante codificada en base64
+pattern,base64(gzip(...)),Cuerpo del POST de resultados: doble codificación

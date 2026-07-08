@@ -1,0 +1,20 @@
+# Ghost Protocol — reglas Suricata para C2 beaconing y exfil codificada
+# (T1071.001 Web C2 / T1132.001 Data Encoding / T1041 Exfil over C2)
+
+# 1) Beacon: check-in periódico del implante al endpoint de status con su UA
+alert http any any -> any any (msg:"KRAKENSOC C2 Beacon - GhostClient check-in"; \
+  flow:established,to_server; \
+  http.method; content:"GET"; \
+  http.uri; content:"/api/v2/status"; \
+  http.user_agent; content:"GhostClient/"; nocase; \
+  classtype:trojan-activity; \
+  metadata:mitre_technique T1071_001, mitre_tactic TA0011; sid:9200001; rev:1;)
+
+# 2) Exfiltración: POST de resultados al endpoint submit del C2
+alert http any any -> any any (msg:"KRAKENSOC C2 Exfiltration - encoded POST to submit endpoint"; \
+  flow:established,to_server; \
+  http.method; content:"POST"; \
+  http.uri; content:"/api/v2/submit"; \
+  http.host; content:"cdn-edge-sync.net"; nocase; \
+  classtype:trojan-activity; \
+  metadata:mitre_technique T1041, mitre_tactic TA0010; sid:9200002; rev:1;)

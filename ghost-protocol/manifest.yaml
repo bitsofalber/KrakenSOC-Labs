@@ -1,0 +1,130 @@
+# SFRS manifest — Ghost Protocol. Validado contra ../schema/manifest.schema.json.
+spec_version: "1.0.0"
+
+id: ghost-protocol
+title: "Ghost Protocol"
+version: "1.0.0"
+difficulty: advanced
+estimated_duration: 60
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "C2 / Beacon Analysis"
+  - "Malware Traffic Analysis"
+  - "Data Decoding"
+categories:
+  - "Network Forensics"
+tags:
+  - "http"
+  - "c2"
+  - "beacon"
+  - "malleable-c2"
+  - "gzip"
+  - "base64"
+  - "exfiltration"
+  - "northwind"
+
+mitre:
+  tactics:
+    - "TA0011 Command and Control"
+    - "TA0009 Collection"
+    - "TA0010 Exfiltration"
+  techniques:
+    - "T1071.001"    # Application Layer Protocol: Web Protocols
+    - "T1132.001"    # Data Encoding: Standard Encoding
+    - "T1041"        # Exfiltration Over C2 Channel
+
+attack_chain:
+  - "Un endpoint de Northwind es comprometido por un implante tipo malleable-C2."
+  - "El implante baliza (beaconing) periódicamente a un C2 HTTP con jitter, camuflado entre navegación web benigna, enviando una cookie de sesión (base64) y un User-Agent distintivo."
+  - "En un check-in, el C2 le entrega una tarea codificada (base64) de exfiltración."
+  - "El implante lee un fichero local de clientes, lo comprime (gzip) y lo codifica (base64) y lo sube al C2 vía POST (exfiltración sobre el canal C2)."
+
+runtime:
+  containers:
+    - name: c2
+      image: "ghcr.io/bitsofalber/ghost-protocol-c2"
+      role: "attacker-c2-http"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/ghost-protocol-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: implant
+      image: "ghcr.io/bitsofalber/ghost-protocol-implant"
+      role: "compromised-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+
+ioc:
+  - type: domain
+    value: "cdn-edge-sync.net"
+    note: "Dominio del C2 (cabecera Host de los beacons)."
+  - type: uri
+    value: "/api/v2/status"
+    note: "Endpoint de check-in del beacon."
+  - type: user_agent
+    value: "GhostClient/2.3"
+    note: "User-Agent distintivo del implante."
+telemetry:
+  - "HTTP traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+
+questions:
+  - id: "Q1"
+    title: "¿Qué dominio usa el C2?"
+  - id: "Q2"
+    title: "¿A qué endpoint hace el implante los check-ins (beacon)?"
+  - id: "Q3"
+    title: "¿Qué User-Agent identifica al implante?"
+  - id: "Q4"
+    title: "¿Cuántos check-ins (beacons) hace el implante?"
+  - id: "Q5"
+    title: "¿Con qué cadena de codificación se ofuscan los datos exfiltrados?"
+  - id: "Q6"
+    title: "¿Qué técnica MITRE ATT&CK describe el canal C2 web?"
+  - id: "Q7"
+    title: "¿Qué se exfiltró y de qué empresa?"
+  - id: "Q8"
+    title: "Recupera la flag del contenido decodificado."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "C2 Beaconing & Malleable Profiles"
+    - "Data Encoding in Malware Traffic"
+  academy_modules:
+    - "Malware Traffic Analysis"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L2 → L3"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1071/001/"
+    - "https://attack.mitre.org/techniques/T1132/001/"
+    - "https://attack.mitre.org/techniques/T1041/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"
+  - "CyberChef o utilidades base64/gzip"

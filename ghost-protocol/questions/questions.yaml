@@ -1,0 +1,35 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aquí — las gestiona KrakenSOC.
+lab: ghost-protocol
+questions:
+  - id: Q1
+    prompt: "¿Qué nombre de dominio utiliza el C2 (cabecera Host de los beacons)?"
+    type: short_text
+    points: 100
+  - id: Q2
+    prompt: "¿A qué endpoint (ruta) hace el implante sus check-ins periódicos?"
+    type: short_text
+    points: 100
+  - id: Q3
+    prompt: "¿Qué User-Agent (o su parte distintiva) identifica al implante?"
+    type: short_text
+    points: 100
+  - id: Q4
+    prompt: "¿Cuántos check-ins (beacons GET al endpoint de status) hace el implante?"
+    type: number
+    points: 150
+  - id: Q5
+    prompt: "¿Con qué cadena de codificación se ofuscan los datos exfiltrados en el POST?"
+    type: short_text
+    points: 150
+  - id: Q6
+    prompt: "¿Qué técnica de MITRE ATT&CK describe el canal C2 sobre HTTP? (formato Txxxx.xxx)"
+    type: short_text
+    points: 100
+  - id: Q7
+    prompt: "¿Qué tipo de fichero se exfiltró y de qué empresa?"
+    type: short_text
+    points: 100
+  - id: Q8
+    prompt: "Recupera la flag oculta en el fichero exfiltrado tras decodificarlo (NORTHWIND{...})."
+    type: flag
+    points: 300

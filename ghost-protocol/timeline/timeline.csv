@@ -1,0 +1,5 @@
+step,phase,description,mitre
+1,command-and-control,Implante baliza periódicamente al C2 HTTP con jitter y cookie base64,T1071.001
+2,command-and-control,El C2 entrega una tarea de exfiltración codificada en base64,T1132.001
+3,collection,El implante lee el fichero local de clientes de Northwind,T1005
+4,exfiltration,El implante sube el fichero comprimido+codificado (gzip+base64) por el canal C2,T1041
