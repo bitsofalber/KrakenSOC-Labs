@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# forge — reference CLI for the KrakenSOC Runtime Labs ecosystem (SFRS §9).
+#
+# It only orchestrates each lab's standard scripts and reads the hub registry.
+# Because every lab honours the SFRS contract, forge needs no per-lab code.
+#
+#   forge install <lab-id>   git clone (from registry) + ./deploy.sh
+#   forge update  <lab-id>   git pull + ./deploy.sh
+#   forge verify  <lab-id>   ./verify.sh
+#   forge doctor  <lab-id>   ./doctor.sh
+#   forge reset   <lab-id>   ./reset.sh
+#   forge destroy <lab-id>   ./destroy.sh
+#   forge list               list labs from the registry
+#
+# Config:
+#   FORGE_HOME   where labs are cloned (default: ~/.krakensoc/labs)
+#   FORGE_REGISTRY  URL/path to registry.yaml (default: bundled hub registry)
+set -euo pipefail
+
+FORGE_HOME="${FORGE_HOME:-$HOME/.krakensoc/labs}"
+HUB_RAW="https://raw.githubusercontent.com/bitsofalber/KrakenSOC-Labs/main"
+FORGE_REGISTRY="${FORGE_REGISTRY:-$HUB_RAW/registry.yaml}"
+
+die() { echo "forge: $*" >&2; exit 1; }
+need() { command -v "$1" >/dev/null 2>&1 || die "falta '$1'"; }
+
+# Resuelve la URL del repo de un lab a partir del registry (yaml simple: 'id: url').
+repo_url() {
+  local id="$1" reg
+  if [ -f "$FORGE_REGISTRY" ]; then reg=$(cat "$FORGE_REGISTRY")
+  else need curl; reg=$(curl -fsSL "$FORGE_REGISTRY"); fi
+  echo "$reg" | awk -v id="$id" '
+    $1=="-" {inrec=1}
+    inrec && $1=="id:" {cur=$2}
+    inrec && $1=="repo:" && cur==id {print $2; exit}'
+}
+
+cmd_install() {
+  local id="${1:?uso: forge install <lab-id>}"
+  local url; url=$(repo_url "$id"); [ -n "$url" ] || die "lab '$id' no está en el registry"
+  mkdir -p "$FORGE_HOME"
+  local dir="$FORGE_HOME/$id"
+  if [ -d "$dir/.git" ]; then echo "Ya instalado en $dir (usa 'forge update $id')"; else
+    need git; git clone --depth 1 "$url" "$dir"; fi
+  ( cd "$dir" && ./deploy.sh )
+}
+cmd_update()  { local id="${1:?}"; ( cd "$FORGE_HOME/$id" && git pull --ff-only && ./deploy.sh ); }
+cmd_run()     { local s="$1" id="${2:?uso: forge $s <lab-id>}"; ( cd "$FORGE_HOME/$id" && "./$s.sh" ); }
+cmd_list()    {
+  if [ -f "$FORGE_REGISTRY" ]; then cat "$FORGE_REGISTRY"; else need curl; curl -fsSL "$FORGE_REGISTRY"; fi \
+    | awk '$1=="id:"{printf "  %s\n",$2}'
+}
+
+case "${1:-}" in
+  install) shift; cmd_install "$@";;
+  update)  shift; cmd_update "$@";;
+  verify|doctor|reset|destroy) s="$1"; shift; cmd_run "$s" "$@";;
+  list)    cmd_list;;
+  ""|-h|--help)
+    grep -E '^#( |$)' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) die "comando desconocido '$1' (prueba: forge --help)";;
+esac

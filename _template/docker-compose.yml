@@ -1,0 +1,40 @@
+# SFRS reference compose — REEMPLÁZALO por el entorno real de tu escenario.
+# Requisito: imágenes multi-arch (linux/amd64 + linux/arm64). Estas dos lo son.
+# Sirve como esqueleto funcional para que deploy.sh / verify.sh operen out-of-the-box.
+
+services:
+  # Un servicio "objetivo" cualquiera con healthcheck (aquí, un web server).
+  web:
+    image: nginx:alpine
+    container_name: ${LAB_ID:-krakensoc-lab}-web
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks: [labnet]
+
+  # Un "sensor" que genera telemetría a un volumen montado (evidencia del lab).
+  sensor:
+    image: alpine:3.20
+    container_name: ${LAB_ID:-krakensoc-lab}-sensor
+    command: >
+      sh -c "mkdir -p /telemetry &&
+             while true; do
+               echo \"$(date -u +%FT%TZ) sensor heartbeat pid=$$\" >> /telemetry/sensor.log;
+               sleep 5;
+             done"
+    volumes:
+      - ./telemetry:/telemetry
+    healthcheck:
+      test: ["CMD-SHELL", "test -s /telemetry/sensor.log"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks: [labnet]
+
+networks:
+  labnet:
+    name: ${LAB_ID:-krakensoc-lab}-net

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bitsofalber/KrakenSOC-Labs/schema/manifest.schema.json",
+  "title": "SOCForge Runtime Lab Manifest",
+  "description": "Canonical manifest every KrakenSOC Runtime Lab must provide (SFRS 1.0.0).",
+  "type": "object",
+  "required": ["spec_version", "id", "title", "version", "difficulty", "estimated_duration", "author", "license", "mitre", "runtime"],
+  "additionalProperties": true,
+  "properties": {
+    "spec_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "difficulty": { "enum": ["beginner", "intermediate", "advanced", "expert"] },
+    "estimated_duration": { "type": "integer", "minimum": 1 },
+    "author": { "type": "string" },
+    "license": { "type": "string" },
+    "skills": { "type": "array", "items": { "type": "string" } },
+    "categories": { "type": "array", "items": { "type": "string" } },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "mitre": {
+      "type": "object",
+      "required": ["techniques"],
+      "properties": {
+        "tactics": { "type": "array", "items": { "type": "string" } },
+        "techniques": { "type": "array", "items": { "type": "string", "pattern": "^T\\d{4}(\\.\\d{3})?" } }
+      }
+    },
+    "attack_chain": { "type": "array", "items": { "type": "string" } },
+    "runtime": {
+      "type": "object",
+      "required": ["containers", "supported_platforms", "minimum_requirements"],
+      "properties": {
+        "containers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "image"],
+            "properties": {
+              "name": { "type": "string" },
+              "image": { "type": "string" },
+              "role": { "type": "string" },
+              "healthcheck": { "type": "boolean" }
+            }
+          }
+        },
+        "ports": { "type": "array", "items": { "type": "string" } },
+        "supported_platforms": {
+          "type": "array",
+          "minItems": 2,
+          "contains": { "enum": ["linux/amd64", "linux/arm64"] },
+          "items": { "type": "string" }
+        },
+        "docker_images": { "type": "array", "items": { "type": "string" } },
+        "minimum_requirements": {
+          "type": "object",
+          "required": ["ram_mb", "disk_mb", "cpus"],
+          "properties": {
+            "ram_mb": { "type": "integer", "minimum": 256 },
+            "disk_mb": { "type": "integer", "minimum": 256 },
+            "cpus": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    },
+    "ioc": { "type": "array" },
+    "telemetry": { "type": "array", "items": { "type": "string" } },
+    "evidence": { "type": "array", "items": { "type": "string" } },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" }
+        },
+        "not": { "required": ["answer"] }
+      }
+    },
+    "flags": {
+      "type": "object",
+      "properties": { "count": { "type": "integer", "minimum": 0 } },
+      "not": { "required": ["values"] }
+    },
+    "resources": { "type": "object" },
+    "required_tools": { "type": "array", "items": { "type": "string" } }
+  }
+}

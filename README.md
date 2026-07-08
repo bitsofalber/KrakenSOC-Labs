@@ -1,35 +1,74 @@
-# KrakenSOC Labs
+# KrakenSOC Runtime Labs
 
-> Colección de laboratorios Blue Team empaquetados en Docker para la plataforma **SOCForge / KrakenSOC**.
-> Cada carpeta es un laboratorio independiente que el alumno despliega en su propia máquina.
+> The official **runtime ecosystem** of KrakenSOC. This repository is the **hub**: it holds the
+> Runtime Specification, the reference template, the manifest schema, the `forge` CLI and the lab registry.
 
-Todos los escenarios transcurren en la organización ficticia **Northwind Global Systems** y están
-pensados para practicar detección, investigación y respuesta como analista de un SOC real
-(no es un CTF ni un cuestionario: es un turno de trabajo).
+**SOCForge is the brain. Docker is the execution environment. GitHub is the distribution platform.**
 
-## Laboratorios
+Docker Runtime Labs are **not** standalone labs — they are official downloadable extensions of KrakenSOC.
+Students discover a lab inside KrakenSOC, download the runtime, run one script, investigate locally, then
+return to KrakenSOC to answer questions and earn XP. **Progress always belongs to KrakenSOC**, never to the runtime.
 
-| Lab | Dominio | Técnicas MITRE ATT&CK |
-| :-- | :------ | :-------------------- |
-| [`operation-black-quill`](./operation-black-quill) | Initial Access / Phishing | T1566.001, T1204.002, T1059 |
-| [`operation-iron-gate`](./operation-iron-gate) | Perimeter / Exploitation of Public-Facing App | T1190, T1133, T1505.003 |
-| [`phantom-storm`](./phantom-storm) | Command & Control / Beaconing | T1071, T1573, T1008 |
-| [`apt29-midnight-blizzard`](./apt29-midnight-blizzard) | Identity / Cloud (M365) | T1078.004, T1114, T1528, T1550.001 |
-| [`silent-harvest`](./silent-harvest) | Credential Access / Collection | T1003, T1555, T1560 |
-| [`unauthorized-horizon`](./unauthorized-horizon) | Cloud / Unauthorized Access | T1078, T1530, T1580 |
-| [`operation-root-shadow`](./operation-root-shadow) | Privilege Escalation (Linux) | T1548, T1068, T1053.003 |
-| [`operation-lockbit`](./operation-lockbit) | Impact / Ransomware (defensivo) | T1486, T1490, T1489 |
-| [`operation-kerberos`](./operation-kerberos) | Credential Access / Active Directory | T1558.003, T1558.001, T1550.003 |
-
-## Cómo se usa un lab
-
-```bash
-git clone https://github.com/bitsofalber/KrakenSOC-Labs.git
-cd KrakenSOC-Labs/<nombre-del-lab>
-docker compose up
+```
+Discover in KrakenSOC → Download runtime (GitHub) → ./deploy.sh → Investigate locally
+        ↑                                                                    │
+        └──────────────  Answer questions · earn XP · unlock  ←─────────────┘
 ```
 
-Sigue el `README.md` de cada laboratorio para las instrucciones concretas.
+## What's in this hub
+
+| Path | Purpose |
+| :-- | :-- |
+| [`SOCFORGE-RUNTIME-SPEC.md`](./SOCFORGE-RUNTIME-SPEC.md) | **The specification.** Every lab MUST comply. Folder structure, manifest, scripts, README, multi-arch, solutions. |
+| [`_template/`](./_template) | The **golden reference lab**. Copy it to start a new SFRS-compliant lab. Working scripts + manifest + multi-arch CI. |
+| [`schema/manifest.schema.json`](./schema/manifest.schema.json) | JSON Schema for `manifest.yaml` — lets KrakenSOC auto-read & validate labs. |
+| [`registry.yaml`](./registry.yaml) | Machine-readable index of all labs, consumed by the SaaS and `forge`. |
+| [`cli/forge`](./cli/forge) | Reference `forge` CLI (`install`, `update`, `verify`, `doctor`, `reset`, `destroy`). |
+
+## The ecosystem in one page
+
+- **One lab = one repository.** Independent versioning, releases, issues and docs.
+- **Standardized.** Identical structure, script names/behaviour, manifest and README across every lab (SFRS).
+- **Multi-arch.** Every lab runs on `linux/amd64` and `linux/arm64` via multi-arch images (not two composes).
+- **Separation of concerns.** The runtime produces the environment + evidence; KrakenSOC owns questions, flags, hints, XP, achievements and career.
+- **Protected solutions.** Answer keys ship encrypted and are unlocked from KrakenSOC only.
+- **Future-proof.** Structure is already compatible with the `forge` CLI so labs need no per-lab tooling.
+
+## Create a new lab
+
+```bash
+cp -r _template <lab-id>
+# 1) edit <lab-id>/manifest.yaml  (validate against schema/manifest.schema.json)
+# 2) replace <lab-id>/docker-compose.yml with the real scenario (multi-arch images)
+# 3) fill README sections, evidence, rules, mitre, questions (defs only)
+# 4) add the lab to registry.yaml
+# 5) verify locally:
+cd <lab-id> && ./deploy.sh && ./verify.sh && ./destroy.sh
+```
+
+A lab is publishable when it passes the **Compliance checklist** in the spec (§10).
+
+## Run a lab (student)
+
+```bash
+git clone https://github.com/<org-or-user>/<lab-id>.git
+cd <lab-id>
+./deploy.sh          # doctor → pull → up → health check → URLs
+# ... investigate, then answer inside KrakenSOC ...
+./destroy.sh
+```
+
+Or, with the future CLI: `forge install <lab-id>`.
+
+## Catalogue
+
+See [`registry.yaml`](./registry.yaml). Planned labs:
+
+`operation-black-quill` · `operation-iron-gate` · `phantom-storm` · `apt29-midnight-blizzard` ·
+`silent-harvest` · `unauthorized-horizon` · `operation-root-shadow` · `operation-lockbit` · `operation-kerberos`
+
+> The provisional per-lab folders in this repo are placeholders. Each lab migrates to its **own repository**
+> (see the spec, §2) once the topology is finalized; `registry.yaml` tracks where each lives.
 
 ---
 

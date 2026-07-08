@@ -1,0 +1,78 @@
+# SFRS manifest — canonical spec for this lab. KrakenSOC reads this to render
+# the lab page. MUST validate against ../schema/manifest.schema.json.
+spec_version: "1.0.0"
+
+id: krakensoc-lab-template
+title: "Runtime Lab Template"
+version: "1.0.0"
+difficulty: beginner            # beginner | intermediate | advanced | expert
+estimated_duration: 30          # minutos
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "Docker"
+  - "Log Analysis"
+categories:
+  - "Reference"
+tags:
+  - "template"
+  - "sfrs"
+
+mitre:
+  tactics:
+    - "TA0007 Discovery"
+  techniques:
+    - "T1046"
+
+attack_chain:
+  - "Este es el esqueleto de referencia; reemplaza con la cadena real del ataque."
+
+runtime:
+  containers:
+    - name: web
+      image: "nginx:alpine"
+      role: "target"
+      healthcheck: true
+    - name: sensor
+      image: "alpine:3.20"
+      role: "telemetry"
+      healthcheck: true
+  ports:
+    - "8080:80"
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "nginx:alpine"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+
+ioc: []                          # resumen; lista completa en ioc/
+telemetry:
+  - "container logs"
+  - "sensor.log"
+evidence:
+  - "logs"
+questions:                       # solo referencias; las respuestas viven en KrakenSOC
+  - id: "Q1"
+    title: "Ejemplo de pregunta de referencia"
+flags:
+  count: 0
+
+resources:
+  knowledge_guides: []
+  academy_modules: []
+  operations: []
+  investigations: []
+  career_paths: []
+  certifications: []
+  external:
+    - "https://attack.mitre.org/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
