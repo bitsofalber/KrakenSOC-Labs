@@ -1,0 +1,11 @@
+employee_id,full_name,role,department,iban,gross_salary_eur,ssn
+NW-1001,Nancy Davolio,Sales Representative,Sales,ES9121000418450200051332,41200,530-11-8842
+NW-1002,Andrew Fuller,VP Sales,Executive,ES7100302053091234567895,98750,417-22-3391
+NW-1003,Janet Leverling,Sales Representative,Sales,ES6000491500051234567892,39800,612-08-7745
+NW-1004,Margaret Peacock,Sales Representative,Sales,ES2038370608260600434567,43100,289-45-1120
+NW-1005,Steven Buchanan,Sales Manager,Sales,ES9420802409160960611299,71500,704-33-9987
+NW-1006,Michael Suyama,Sales Representative,Sales,ES1000750451200060123456,37600,551-77-2043
+NW-1007,Robert King,Sales Representative,Sales,ES8021001111220200341190,38900,326-19-5580
+NW-1008,Laura Callahan,Inside Sales Coordinator,Sales,ES7601280012340560789012,35200,448-90-6612
+NW-9999,__EXFIL_MARKER__,marker,marker,ES0000000000000000000000,0,000-00-0000
+# NORTHWIND{dn5_tunn3l_1n_pl41n_51ght}

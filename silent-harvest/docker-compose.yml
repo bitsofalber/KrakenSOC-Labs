@@ -1,0 +1,55 @@
+# Silent Harvest — DNS exfiltration runtime (SFRS-compliant).
+# 3 servicios: resolver (C2 DNS), victim (exfiltra + ruido), sniffer (captura).
+# El sniffer comparte el netns del resolver para ver TODO el DNS entrante y
+# escribe la captura en ./pcaps/dns-exfil.pcap (la evidencia del alumno).
+# Imágenes base multi-arch (python:slim, alpine) -> corre en amd64 y arm64.
+
+services:
+  resolver:
+    build: ./runtime/resolver
+    image: ${IMAGE_RESOLVER:-krakensoc/silent-harvest-resolver:local}
+    container_name: ${LAB_ID:-silent-harvest}-resolver
+    environment:
+      - EXFIL_DOMAIN=${EXFIL_DOMAIN:-sync-telemetry-cdn.net}
+      - INSTRUCTOR_MODE=${INSTRUCTOR_MODE:-0}
+    volumes:
+      - ./pcaps:/pcaps
+    networks: [labnet]
+
+  sniffer:
+    build: ./runtime/sniffer
+    image: ${IMAGE_SNIFFER:-krakensoc/silent-harvest-sniffer:local}
+    container_name: ${LAB_ID:-silent-harvest}-sniffer
+    # Comparte la pila de red del resolver: tcpdump ve todo el DNS que le llega.
+    network_mode: "service:resolver"
+    volumes:
+      - ./pcaps:/pcaps
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /pcaps/dns-exfil.pcap"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      - resolver
+
+  victim:
+    build: ./runtime/victim
+    image: ${IMAGE_VICTIM:-krakensoc/silent-harvest-victim:local}
+    container_name: ${LAB_ID:-silent-harvest}-victim
+    environment:
+      - EXFIL_DOMAIN=${EXFIL_DOMAIN:-sync-telemetry-cdn.net}
+      - RESOLVER_HOST=resolver
+      - START_DELAY=${START_DELAY:-6}
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/exfil_done"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    depends_on:
+      - resolver
+      - sniffer
+    networks: [labnet]
+
+networks:
+  labnet:
+    name: ${LAB_ID:-silent-harvest}-net

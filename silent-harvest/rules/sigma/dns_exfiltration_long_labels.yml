@@ -1,0 +1,29 @@
+title: DNS Exfiltration via Long Encoded Subdomain Labels
+id: 6f1c2e40-1a2b-4c3d-9e5f-silentharvest01
+status: experimental
+description: >
+  Detecta posible exfiltración/tunneling por DNS: alto volumen de consultas al
+  mismo dominio padre con etiquetas de subdominio largas y de alta entropía
+  (base32/base64), típico de herramientas de DNS tunneling.
+references:
+  - https://attack.mitre.org/techniques/T1048/003/
+  - https://attack.mitre.org/techniques/T1071/004/
+author: KrakenSOC
+date: 2026/07/08
+logsource:
+  category: dns
+detection:
+  selection_long_label:
+    dns.query.name|re: '([a-z2-7]{40,})\.'      # etiqueta base32 >=40 chars
+  condition: selection_long_label
+fields:
+  - dns.query.name
+  - src_ip
+falsepositives:
+  - CDNs y servicios que usan subdominios largos generados (revisar el dominio padre)
+level: high
+tags:
+  - attack.exfiltration
+  - attack.t1048.003
+  - attack.command_and_control
+  - attack.t1071.004

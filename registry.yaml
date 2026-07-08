@@ -1,37 +1,41 @@
 # KrakenSOC Runtime Labs — official registry.
 # Machine-readable index consumed by KrakenSOC (the SaaS) and the `forge` CLI.
-# One entry per lab. `repo` is the git URL; the SaaS reads each lab's
-# manifest.yaml from there to render its page. Keep entries alphabetical.
 #
-# NOTE: repo URLs below are provisional placeholders until the lab-repo
-# topology is finalized (org vs. per-user). Update them when repos are created.
+# Topology: monorepo. Every lab is a self-contained directory inside this repo.
+# `path` is the lab folder; the SaaS reads each lab's manifest.yaml from there.
+# `status`: available | planned. Keep entries alphabetical.
 spec_version: "1.0.0"
+repo: https://github.com/bitsofalber/KrakenSOC-Labs
 
 labs:
+  - id: silent-harvest
+    status: available
+    path: ./silent-harvest
+    title: "Silent Harvest"
+    difficulty: intermediate
+    categories: ["Network Forensics"]
+
   - id: apt29-midnight-blizzard
     status: planned
-    repo: https://github.com/bitsofalber/apt29-midnight-blizzard
+    path: ./apt29-midnight-blizzard
   - id: operation-black-quill
     status: planned
-    repo: https://github.com/bitsofalber/operation-black-quill
+    path: ./operation-black-quill
   - id: operation-iron-gate
     status: planned
-    repo: https://github.com/bitsofalber/operation-iron-gate
+    path: ./operation-iron-gate
   - id: operation-kerberos
     status: planned
-    repo: https://github.com/bitsofalber/operation-kerberos
+    path: ./operation-kerberos
   - id: operation-lockbit
     status: planned
-    repo: https://github.com/bitsofalber/operation-lockbit
+    path: ./operation-lockbit
   - id: operation-root-shadow
     status: planned
-    repo: https://github.com/bitsofalber/operation-root-shadow
+    path: ./operation-root-shadow
   - id: phantom-storm
     status: planned
-    repo: https://github.com/bitsofalber/phantom-storm
-  - id: silent-harvest
-    status: planned
-    repo: https://github.com/bitsofalber/silent-harvest
+    path: ./phantom-storm
   - id: unauthorized-horizon
     status: planned
-    repo: https://github.com/bitsofalber/unauthorized-horizon
+    path: ./unauthorized-horizon

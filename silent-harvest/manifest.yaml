@@ -1,0 +1,114 @@
+# SFRS manifest — Silent Harvest. Validado contra ../schema/manifest.schema.json.
+spec_version: "1.0.0"
+
+id: silent-harvest
+title: "Silent Harvest"
+version: "1.0.0"
+difficulty: intermediate
+estimated_duration: 45
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "DNS"
+  - "Data Exfiltration Analysis"
+categories:
+  - "Network Forensics"
+tags:
+  - "dns"
+  - "exfiltration"
+  - "tunneling"
+  - "wireshark"
+  - "northwind"
+
+mitre:
+  tactics:
+    - "TA0010 Exfiltration"
+    - "TA0011 Command and Control"
+  techniques:
+    - "T1048.003"   # Exfiltration Over Unencrypted Non-C2 Protocol (DNS)
+    - "T1071.004"   # Application Layer Protocol: DNS
+
+attack_chain:
+  - "Un endpoint de Northwind (Sales) es comprometido."
+  - "El malware localiza un fichero sensible de nóminas (payroll Q3)."
+  - "Codifica el fichero en base32 y lo trocea en etiquetas de subdominio."
+  - "Exfiltra los fragmentos como consultas DNS A hacia un dominio controlado por el atacante, escondidas entre tráfico DNS legítimo."
+
+runtime:
+  containers:
+    - name: resolver
+      image: "krakensoc/silent-harvest-resolver"
+      role: "attacker-c2-dns"
+      healthcheck: false
+    - name: sniffer
+      image: "krakensoc/silent-harvest-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: victim
+      image: "krakensoc/silent-harvest-victim"
+      role: "compromised-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+
+ioc:
+  - type: domain
+    value: "sync-telemetry-cdn.net"
+    note: "Dominio de exfiltración (C2 DNS)."
+  - type: ipv4
+    value: "10.66.6.66"
+    note: "IP devuelta por el C2 en las respuestas A."
+telemetry:
+  - "DNS queries (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+
+questions:
+  - id: "Q1"
+    title: "¿Qué dominio se usa para la exfiltración?"
+  - id: "Q2"
+    title: "¿Qué técnica MITRE ATT&CK describe la actividad?"
+  - id: "Q3"
+    title: "¿Cuántas consultas DNS transportan datos exfiltrados?"
+  - id: "Q4"
+    title: "¿Cómo se codifican los datos en los subdominios?"
+  - id: "Q5"
+    title: "Reconstruye el fichero exfiltrado: ¿qué contiene?"
+  - id: "Q6"
+    title: "Recupera la flag oculta en los datos exfiltrados."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "DNS Tunneling & Exfiltration"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1 → L2"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1048/003/"
+    - "https://attack.mitre.org/techniques/T1071/004/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

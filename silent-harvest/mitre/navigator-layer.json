@@ -1,0 +1,12 @@
+{
+  "name": "Silent Harvest",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "DNS exfiltration lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1048.003", "score": 100, "comment": "Exfiltration Over Unencrypted Non-C2 Protocol (DNS)" },
+    { "techniqueID": "T1071.004", "score": 100, "comment": "Application Layer Protocol: DNS" },
+    { "techniqueID": "T1005", "score": 50, "comment": "Data from Local System (payroll file)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

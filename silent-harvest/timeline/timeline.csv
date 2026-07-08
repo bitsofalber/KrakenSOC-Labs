@@ -1,0 +1,5 @@
+step,phase,description,mitre
+1,initial-access,Endpoint de Sales comprometido,-
+2,collection,Malware localiza payroll_Q3.csv,T1005
+3,command-and-control,Resolución DNS hacia dominio del atacante,T1071.004
+4,exfiltration,Fichero codificado base32 y enviado en subdominios DNS,T1048.003

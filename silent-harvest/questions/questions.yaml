@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aquí — las gestiona KrakenSOC.
+lab: silent-harvest
+questions:
+  - id: Q1
+    prompt: "¿Qué nombre de dominio utiliza el atacante para exfiltrar los datos?"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Qué sub-técnica de MITRE ATT&CK describe esta exfiltración? (formato Txxxx.xxx)"
+    type: short_text
+    points: 10
+  - id: Q3
+    prompt: "¿Cuántas consultas DNS transportan fragmentos de datos (prefijo dNNNN)?"
+    type: number
+    points: 15
+  - id: Q4
+    prompt: "¿Con qué codificación se ofuscan los datos dentro de los subdominios?"
+    type: short_text
+    points: 10
+  - id: Q5
+    prompt: "Reconstruye el fichero exfiltrado. ¿Qué tipo de información contiene y de qué empresa?"
+    type: short_text
+    points: 25
+  - id: Q6
+    prompt: "Introduce la flag oculta en los datos exfiltrados (formato NORTHWIND{...})."
+    type: flag
+    points: 30

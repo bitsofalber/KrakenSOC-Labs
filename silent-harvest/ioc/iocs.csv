@@ -1,0 +1,4 @@
+type,value,context
+domain,sync-telemetry-cdn.net,Dominio de exfiltración (C2 DNS)
+ipv4,10.66.6.66,IP devuelta por el C2 en respuestas A
+pattern,"[a-z2-7]{40,} en etiquetas DNS",Subdominios base32 de alta entropía (datos exfiltrados)
