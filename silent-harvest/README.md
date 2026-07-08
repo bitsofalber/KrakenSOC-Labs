@@ -48,6 +48,20 @@ Network Forensics · Wireshark / tshark · DNS · Data Exfiltration Analysis
 - Docker + Docker Compose v2 · `linux/amd64` or `linux/arm64`
 - ≥ 2 GB RAM, ≥ 4 GB disk · Wireshark / tshark to analyse the capture
 
+## Compatibility — Apple Silicon (ARM) & Intel/AMD
+This lab runs **natively on both architectures** — there is **no separate ARM or AMD version**.
+The images are built from multi-arch bases (`python:3.12-slim`, `alpine`), so `docker compose build`
+produces images for **your** machine's architecture automatically:
+
+| Your machine | Architecture | Status |
+| :-- | :-- | :-- |
+| Mac M1/M2/M3/M4, ARM PCs | `arm64` | ✅ native |
+| Intel/AMD PCs, Intel Mac | `amd64` | ✅ native |
+
+`./doctor.sh` detects your architecture and stops early with a clear message if it is unsupported.
+Nothing to choose, nothing to configure — the same `./deploy.sh` works everywhere.
+> Verified: images build on `arm64` (native) and `amd64` (buildx). Prebuilt GHCR images (see `.github/workflows/release.yml`) publish a single multi-arch manifest, so students always `pull` the right variant.
+
 ## Quick Start
 ```bash
 git clone https://github.com/bitsofalber/KrakenSOC-Labs.git

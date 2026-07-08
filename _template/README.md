@@ -40,6 +40,12 @@ Docker · Log Analysis _(extend per scenario)._
 - `linux/amd64` or `linux/arm64`
 - ≥ 2 GB RAM, ≥ 4 GB disk free
 
+## Compatibility — Apple Silicon (ARM) & Intel/AMD
+Every SFRS lab runs **natively on both architectures** — never ship a separate ARM/AMD version.
+Use multi-arch base images (or publish multi-arch images to GHCR via `.github/workflows/release.yml`).
+`docker compose build` targets the host architecture automatically and `./doctor.sh` validates it.
+The same `./deploy.sh` works on Mac Apple Silicon and Intel/AMD alike.
+
 ## Quick Start
 ```bash
 git clone https://github.com/<org-or-user>/<lab-id>.git
