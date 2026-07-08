@@ -1,0 +1,39 @@
+# Overwatch — SPL de detección / correlation searches (índice northwind).
+# Cárgalas como Saved Searches o úsalas como base para tus alertas.
+
+# 1) Sign-in de alto riesgo (posible acceso con credenciales robadas) — T1078
+index=northwind sourcetype=azuread:signin riskLevel=high
+| stats count min(_time) as first values(ipAddress) as src_ip by userPrincipalName
+
+# 2) PowerShell con EncodedCommand (ofuscación) — T1059.001
+index=northwind sourcetype=Sysmon EventID=1 CommandLine="*-EncodedCommand*"
+| table _time, Computer, User, ParentImage, CommandLine
+
+# 3) C2 beaconing: check-ins muy regulares al mismo destino — T1071.001
+index=northwind sourcetype=proxy:web
+| sort 0 _time
+| streamstats current=f last(_time) as prev by src, dest_host
+| eval gap=_time-prev
+| stats count, dc(gap) as distinct_gaps, avg(gap) as avg_gap by src, dest_host, http_user_agent
+| where count >= 10 AND distinct_gaps <= 2
+| sort - count
+
+# 4) User-Agent raro/infrecuente en el proxy (fingerprint de implante) — T1071.001
+index=northwind sourcetype=proxy:web
+| stats count by http_user_agent
+| sort count
+| head 5
+
+# 5) Exfiltración DNS: subdominios largos de alta entropía — T1048.003
+index=northwind sourcetype=zeek:dns
+| eval label=mvindex(split(query,"."),0)
+| eval sub=mvindex(split(query,"."),1)
+| where len(sub) >= 40
+| rex field=query "\.(?<parent>[^.]+\.[^.]+)$"
+| stats count values(parent) as parent_domain by id.orig_h
+| where count > 20
+
+# 6) Acceso a fichero sensible seguido de exfil (correlación) — T1005/T1048.003
+index=northwind (sourcetype=WinEventLog:Security EventCode=4663 Object_Name="*payroll*")
+  OR (sourcetype=zeek:dns query="*sync-telemetry-cdn.net")
+| stats count by sourcetype

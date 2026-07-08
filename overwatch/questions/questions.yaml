@@ -1,0 +1,43 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aquí — las gestiona KrakenSOC.
+lab: overwatch
+questions:
+  - id: Q1
+    prompt: "¿Cuál es el hostname del endpoint paciente cero (donde corre el implante)?"
+    type: short_text
+    points: 100
+  - id: Q2
+    prompt: "¿Qué cuenta de usuario se compromete (sign-in de alto riesgo desde IP foránea)?"
+    type: short_text
+    points: 100
+  - id: Q3
+    prompt: "¿Con qué nombre de dominio C2 se comunica el implante?"
+    type: short_text
+    points: 100
+  - id: Q4
+    prompt: "¿Cuántos check-ins (beacons) hace el implante al endpoint /api/v2/status?"
+    type: number
+    points: 150
+  - id: Q5
+    prompt: "¿Qué User-Agent (o su parte distintiva) usa el implante?"
+    type: short_text
+    points: 100
+  - id: Q6
+    prompt: "¿Cuál es el intervalo de beacon en segundos?"
+    type: number
+    points: 150
+  - id: Q7
+    prompt: "¿A qué dominio se exfiltran los datos por tunneling DNS?"
+    type: short_text
+    points: 100
+  - id: Q8
+    prompt: "¿Con qué codificación se ofuscan los subdominios de la exfiltración DNS?"
+    type: short_text
+    points: 100
+  - id: Q9
+    prompt: "¿Qué fichero sensible se robó (nombre)?"
+    type: short_text
+    points: 100
+  - id: Q10
+    prompt: "Decodifica el PowerShell -EncodedCommand y recupera la flag (NORTHWIND{...})."
+    type: flag
+    points: 300

@@ -1,0 +1,139 @@
+# SFRS manifest — Overwatch. Validado contra ../schema/manifest.schema.json.
+# Lab de clase "interactive" (SFRS §11): expone Splunk Web en el host.
+spec_version: "1.0.0"
+
+id: overwatch
+title: "Overwatch"
+version: "1.0.0"
+difficulty: advanced
+estimated_duration: 90
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "SIEM"
+  - "Splunk"
+  - "SPL"
+  - "Threat Hunting"
+  - "Incident Response"
+  - "Log Correlation"
+categories:
+  - "SIEM / Threat Hunting"
+tags:
+  - "splunk"
+  - "spl"
+  - "siem"
+  - "threat-hunting"
+  - "correlation"
+  - "northwind"
+  - "capstone"
+
+mitre:
+  tactics:
+    - "TA0001 Initial Access"
+    - "TA0002 Execution"
+    - "TA0011 Command and Control"
+    - "TA0010 Exfiltration"
+  techniques:
+    - "T1078"        # Valid Accounts
+    - "T1059.001"    # PowerShell
+    - "T1071.001"    # Web Protocols (C2)
+    - "T1048.003"    # Exfiltration Over Unencrypted Non-C2 Protocol (DNS)
+    - "T1132.001"    # Data Encoding
+
+attack_chain:
+  - "Acceso inicial: la cuenta de s.buchanan (cuyas credenciales se capturaron en el portal legacy) se usa desde una IP foránea — sign-in de alto riesgo en Azure AD."
+  - "Ejecución: una macro lanza PowerShell con -EncodedCommand y deja caer el implante ghostclient.exe en el endpoint NW-WKS-014."
+  - "C2: el implante baliza cada 30s a cdn-edge-sync.net con un User-Agent distintivo (visible en Sysmon, proxy y Zeek)."
+  - "Descubrimiento y recolección: whoami/net/nltest y lectura del fichero de nóminas."
+  - "Exfiltración: tunneling DNS en base32 hacia sync-telemetry-cdn.net."
+
+runtime:
+  containers:
+    - name: splunk
+      image: "splunk/splunk:9.3.2"
+      role: "siem"
+      healthcheck: true
+    - name: forge
+      image: "ghcr.io/bitsofalber/overwatch-forge"
+      role: "data-generator"
+      healthcheck: true
+  ports:
+    - "8000:8000"
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "splunk/splunk:9.3.2"
+    - "python:3.12-slim"
+  minimum_requirements:
+    ram_mb: 4096
+    disk_mb: 8192
+    cpus: 2
+
+ioc:
+  - type: account
+    value: "s.buchanan"
+    note: "Cuenta comprometida (reutilización de credenciales)."
+  - type: domain
+    value: "cdn-edge-sync.net"
+    note: "C2 del implante (beacon cada 30s)."
+  - type: domain
+    value: "sync-telemetry-cdn.net"
+    note: "Dominio de exfiltración DNS (base32)."
+  - type: host
+    value: "NW-WKS-014"
+    note: "Endpoint paciente cero."
+telemetry:
+  - "Sysmon (process, network, file, dns)"
+  - "WinEventLog:Security"
+  - "Zeek (dns, http)"
+  - "Web proxy"
+  - "Azure AD sign-ins"
+evidence:
+  - "siem"
+
+questions:
+  - id: "Q1"
+    title: "¿Cuál es el host paciente cero?"
+  - id: "Q2"
+    title: "¿Qué cuenta se compromete?"
+  - id: "Q3"
+    title: "¿Con qué dominio C2 se comunica el implante?"
+  - id: "Q4"
+    title: "¿Cuántos check-ins de beacon hay?"
+  - id: "Q5"
+    title: "¿Qué User-Agent usa el implante?"
+  - id: "Q6"
+    title: "¿Cuál es el intervalo de beacon (segundos)?"
+  - id: "Q7"
+    title: "¿A qué dominio se exfiltran los datos por DNS?"
+  - id: "Q8"
+    title: "¿Con qué codificación se ofusca la exfiltración DNS?"
+  - id: "Q9"
+    title: "¿Qué fichero se robó?"
+  - id: "Q10"
+    title: "Recupera la flag del PowerShell EncodedCommand."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "SPL Fundamentals"
+    - "Threat Hunting with a SIEM"
+  academy_modules:
+    - "SIEM & Detection Engineering"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1 → L3"
+  certifications:
+    - "Splunk Core Certified User"
+  external:
+    - "https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/WhatsInThisManual"
+    - "https://attack.mitre.org/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Un navegador web (para Splunk Web)"

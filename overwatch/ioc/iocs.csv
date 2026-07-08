@@ -1,0 +1,9 @@
+type,value,context
+account,s.buchanan,Cuenta comprometida (reutilización de credenciales)
+host,NW-WKS-014,Endpoint paciente cero
+domain,cdn-edge-sync.net,C2 del implante (beacon cada 30s)
+ipv4,45.83.220.17,IP del C2
+domain,sync-telemetry-cdn.net,Dominio de exfiltración DNS (base32)
+user_agent,GhostClient/2.3,User-Agent del implante
+file,ghostclient.exe,Binario del implante
+uri,/api/v2/status,Endpoint de check-in del beacon

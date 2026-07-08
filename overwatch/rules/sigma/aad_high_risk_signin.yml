@@ -1,0 +1,26 @@
+title: Azure AD High-Risk Sign-in (Possible Stolen Credentials)
+id: 4c2a7e90-3b5d-4f11-9a6c-overwatch0001
+status: experimental
+description: >
+  Detecta un inicio de sesión de Azure AD marcado como alto riesgo, indicativo
+  de uso de credenciales robadas / viaje imposible (MITRE ATT&CK T1078).
+references:
+  - https://attack.mitre.org/techniques/T1078/
+author: KrakenSOC
+date: 2026/07/08
+logsource:
+  product: azure
+  service: signinlogs
+detection:
+  selection:
+    riskLevel: 'high'
+  condition: selection
+fields:
+  - userPrincipalName
+  - ipAddress
+falsepositives:
+  - Viajes legítimos / VPN corporativa (validar con el usuario)
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1078

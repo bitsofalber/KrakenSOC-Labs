@@ -15,6 +15,13 @@ labs:
     difficulty: advanced
     categories: ["Network Forensics"]
 
+  - id: overwatch
+    status: available
+    path: ./overwatch
+    title: "Overwatch"
+    difficulty: advanced
+    categories: ["SIEM / Threat Hunting"]
+
   - id: plain-sight
     status: available
     path: ./plain-sight

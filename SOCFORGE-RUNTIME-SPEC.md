@@ -212,4 +212,21 @@ Copy `_template/` to start a new compliant lab. Third parties can author labs th
 
 ---
 
+## 11. Interactive labs (SIEM / tool UIs)
+
+Most labs produce **offline evidence** (a PCAP, logs) the student analyses with their own tools. An **interactive lab** instead ships a real analysis platform (a SIEM such as Splunk or Elastic, a Zeek/Arkime UI, etc.) that the student **drives live in the browser**. Overwatch is the reference implementation.
+
+Interactive labs follow the same contract with these additions:
+
+- **UI over a host port.** `manifest.runtime.ports` MUST expose the tool's web port (e.g. `"8000:8000"`), and `.env.example` MUST make it overridable (`SPLUNK_WEB_PORT`) with `REQUIRED_PORTS` set so `doctor.sh` checks it is free.
+- **Evidence lives inside the tool.** Use `evidence: ["siem"]` and document the index/dataset and starter queries in the README. There is no `pcaps/` deliverable.
+- **A generator, not shipped evidence.** A one-shot `forge`/ingest service creates the dataset **deterministically** (fixed seed) and loads it at deploy time (e.g. Splunk HEC). Answers stay stable across runs. `reset.sh` recreates a pristine dataset (`down -v` + up re-ingests).
+- **Readiness = platform healthy AND data loaded.** `verify.sh` passes only when the tool is healthy and the generator has finished (health-gated marker).
+- **Credentials.** `deploy.sh` prints the URL and login. Never commit real secrets; the flag stays baked-in-CI / decoy-in-repo (§8).
+- **Heavier footprint & upstream images.** SIEM images are large and may be **single-arch** (the official Splunk image is amd64-only). Pin `platform: linux/amd64` when needed; `doctor.sh` MUST warn that ARM runs under emulation. Raise `minimum_requirements` accordingly.
+
+Everything else (naming §2, structure §3, manifest §4, the five scripts §5, README §6, protected answers §8, registry §10) applies unchanged.
+
+---
+
 _SOCForge // KrakenSOC — SOCForge is the brain. Docker is the execution environment. GitHub is the distribution platform._

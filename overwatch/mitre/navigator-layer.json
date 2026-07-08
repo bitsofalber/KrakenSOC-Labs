@@ -1,0 +1,16 @@
+{
+  "name": "Overwatch",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "SIEM capstone — full Northwind intrusion (Splunk) — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1078", "score": 90, "comment": "Valid Accounts (s.buchanan)" },
+    { "techniqueID": "T1059.001", "score": 90, "comment": "PowerShell -EncodedCommand" },
+    { "techniqueID": "T1071.001", "score": 100, "comment": "Web Protocols C2 (cdn-edge-sync.net)" },
+    { "techniqueID": "T1048.003", "score": 100, "comment": "DNS exfiltration (sync-telemetry-cdn.net)" },
+    { "techniqueID": "T1132.001", "score": 70, "comment": "Data Encoding (base32/base64)" },
+    { "techniqueID": "T1005", "score": 50, "comment": "Data from Local System (payroll_Q3.csv)" },
+    { "techniqueID": "T1087", "score": 40, "comment": "Account/Domain Discovery" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

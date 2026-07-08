@@ -1,0 +1,7 @@
+step,phase,description,mitre
+1,initial-access,Sign-in de alto riesgo de s.buchanan desde IP foránea (misma /24 que el C2),T1078
+2,execution,Macro -> PowerShell -EncodedCommand -> drop de ghostclient.exe en NW-WKS-014,T1059.001
+3,command-and-control,Beaconing cada 30s a cdn-edge-sync.net (Sysmon/proxy/Zeek),T1071.001
+4,discovery,whoami / net group / nltest / systeminfo,T1087
+5,collection,Lectura y copia del fichero payroll_Q3.csv,T1005
+6,exfiltration,Tunneling DNS en base32 hacia sync-telemetry-cdn.net,T1048.003
