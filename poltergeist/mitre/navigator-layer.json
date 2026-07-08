@@ -1,0 +1,16 @@
+{
+  "name": "Poltergeist",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "PowerShell attack threat hunt (Splunk) — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1059.001", "score": 100, "comment": "PowerShell" },
+    { "techniqueID": "T1027", "score": 90, "comment": "Obfuscated / EncodedCommand" },
+    { "techniqueID": "T1105", "score": 80, "comment": "Ingress Tool Transfer (download cradles)" },
+    { "techniqueID": "T1562.001", "score": 80, "comment": "Disable AV (Set-MpPreference)" },
+    { "techniqueID": "T1070.001", "score": 80, "comment": "Clear Windows Event Logs" },
+    { "techniqueID": "T1003", "score": 70, "comment": "Invoke-Mimikatz" },
+    { "techniqueID": "T1547.001", "score": 50, "comment": "Run Keys persistence" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

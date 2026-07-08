@@ -1,0 +1,47 @@
+# Poltergeist — SPL de detección de abuso de PowerShell (índice northwind).
+# Fuentes: Sysmon EventID=1 (proceso) y PowerShell 4104 (Script Block Logging).
+
+# 1) Comandos PowerShell codificados (ofuscación) — T1027 / T1059.001
+index=northwind sourcetype=Sysmon EventID=1
+  (CommandLine="*-EncodedCommand*" OR CommandLine="*-enc *")
+| table _time, Computer, User, ParentImage, CommandLine, action
+
+# 2) Download cradles: descarga+ejecución en memoria — T1105
+index=northwind sourcetype=Sysmon EventID=1
+  (CommandLine="*DownloadString*" OR CommandLine="*DownloadFile*"
+   OR CommandLine="*Invoke-WebRequest*" OR CommandLine="*iwr *"
+   OR CommandLine="*Start-BitsTransfer*" OR CommandLine="* curl *" OR CommandLine="* iex*")
+| rex field=CommandLine "https?://(?<url_host>[^/'\") ]+)"
+| stats count by Computer, User, url_host, action
+
+# 3) PowerShell hijo de un proceso de Office (macro) — T1566 / T1059.001
+index=northwind sourcetype=Sysmon EventID=1 Image="*powershell.exe"
+  (ParentImage="*winword.exe" OR ParentImage="*excel.exe" OR ParentImage="*outlook.exe"
+   OR ParentImage="*mshta.exe" OR ParentImage="*wmiprvse.exe" OR ParentImage="*rundll32.exe")
+| table _time, Computer, User, ParentImage, CommandLine, event_type
+
+# 4) Ejecución sospechosa (flags de evasión) — T1059.001
+index=northwind sourcetype=Sysmon EventID=1
+  (CommandLine="*-nop*" OR CommandLine="*-NoProfile*"
+   OR CommandLine="*-ExecutionPolicy Bypass*" OR CommandLine="*-w hidden*"
+   OR CommandLine="*-WindowStyle Hidden*")
+| stats count by Computer, User, event_type
+
+# 5) Manipulación del AV — T1562.001
+index=northwind sourcetype=Sysmon EventID=1
+  (CommandLine="*Set-MpPreference*" OR CommandLine="*Add-MpPreference*")
+| table _time, Computer, User, CommandLine, action
+
+# 6) Borrado de logs — T1070.001
+index=northwind sourcetype=Sysmon EventID=1
+  (CommandLine="*wevtutil*cl*" OR CommandLine="*Clear-EventLog*")
+| table _time, Computer, User, CommandLine, action
+
+# 7) Volcado de credenciales — T1003
+index=northwind sourcetype=Sysmon EventID=1 CommandLine="*Mimikatz*"
+| table _time, Computer, User, CommandLine, action
+
+# 8) Panel resumen: eventos por técnica / severidad / acción
+index=northwind sourcetype=Sysmon EventID=1
+| stats count by event_type, severity, action
+| sort - count

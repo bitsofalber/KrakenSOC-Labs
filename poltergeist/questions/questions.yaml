@@ -1,0 +1,35 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aquí — las gestiona KrakenSOC.
+lab: poltergeist
+questions:
+  - id: Q1
+    prompt: "¿Cuántos eventos de PowerShell usan el parámetro -EncodedCommand?"
+    type: number
+    points: 100
+  - id: Q2
+    prompt: "¿Qué hostname concentra más actividad PowerShell maliciosa (paciente cero)?"
+    type: short_text
+    points: 100
+  - id: Q3
+    prompt: "¿Qué nombre de dominio usa el download cradle que más se repite?"
+    type: short_text
+    points: 100
+  - id: Q4
+    prompt: "¿Qué cmdlet de PowerShell se usa para desactivar la protección en tiempo real del antivirus?"
+    type: short_text
+    points: 100
+  - id: Q5
+    prompt: "¿Qué técnica de MITRE ATT&CK corresponde al borrado de registros de eventos? (formato Txxxx.xxx)"
+    type: short_text
+    points: 100
+  - id: Q6
+    prompt: "¿Qué usuario ejecutó Invoke-Mimikatz (volcado de credenciales)?"
+    type: short_text
+    points: 100
+  - id: Q7
+    prompt: "¿Cuántos eventos maliciosos fueron bloqueados (action=Blocked)?"
+    type: number
+    points: 100
+  - id: Q8
+    prompt: "Decodifica el -EncodedCommand que oculta la flag y recupérala (NORTHWIND{...})."
+    type: flag
+    points: 300

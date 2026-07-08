@@ -1,0 +1,8 @@
+step,phase,description,mitre
+1,execution,Documentos de Office lanzan PowerShell (winword/excel/outlook -> powershell),T1059.001
+2,execution,Comandos codificados (-EncodedCommand) y download cradles (IEX/IWR/BITS),T1027
+3,command-and-control,Descarga de payloads desde dominios del atacante,T1105
+4,defense-evasion,Set-MpPreference desactiva el AV; exclusiones añadidas,T1562.001
+5,credential-access,Invoke-Mimikatz vuelca credenciales,T1003
+6,persistence,Run keys, tareas programadas y creación de cuentas,T1547.001
+7,defense-evasion,Borrado de logs con wevtutil / Clear-EventLog,T1070.001

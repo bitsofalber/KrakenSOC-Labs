@@ -1,0 +1,8 @@
+type,value,context
+domain,cdn-edge-sync.net,Download cradle principal (IEX/IWR)
+domain,update-svc-cdn.net,Descarga de dropper y BITS transfer
+domain,malicious-download.net,Descarga vía curl
+host,NW-WKS-014,Paciente cero (más actividad maliciosa)
+technique,T1070.001,Borrado de logs (wevtutil cl / Clear-EventLog)
+technique,T1562.001,Desactivación del AV (Set-MpPreference / Add-MpPreference)
+pattern,-EncodedCommand,Comandos PowerShell ofuscados en base64

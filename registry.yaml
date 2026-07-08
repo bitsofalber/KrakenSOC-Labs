@@ -29,6 +29,13 @@ labs:
     difficulty: beginner
     categories: ["Network Forensics"]
 
+  - id: poltergeist
+    status: available
+    path: ./poltergeist
+    title: "Poltergeist"
+    difficulty: intermediate
+    categories: ["SIEM / Threat Hunting"]
+
   - id: silent-harvest
     status: available
     path: ./silent-harvest
