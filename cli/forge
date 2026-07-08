@@ -30,9 +30,9 @@ repo_url() {
   if [ -f "$FORGE_REGISTRY" ]; then reg=$(cat "$FORGE_REGISTRY")
   else need curl; reg=$(curl -fsSL "$FORGE_REGISTRY"); fi
   echo "$reg" | awk -v id="$id" '
-    $1=="-" {inrec=1}
-    inrec && $1=="id:" {cur=$2}
-    inrec && $1=="repo:" && cur==id {print $2; exit}'
+    $1=="-" && $2=="id:" {cur=$3}
+    $1=="id:"            {cur=$2}
+    $1=="repo:" && cur==id {print $2; exit}'
 }
 
 cmd_install() {
@@ -48,7 +48,7 @@ cmd_update()  { local id="${1:?}"; ( cd "$FORGE_HOME/$id" && git pull --ff-only 
 cmd_run()     { local s="$1" id="${2:?uso: forge $s <lab-id>}"; ( cd "$FORGE_HOME/$id" && "./$s.sh" ); }
 cmd_list()    {
   if [ -f "$FORGE_REGISTRY" ]; then cat "$FORGE_REGISTRY"; else need curl; curl -fsSL "$FORGE_REGISTRY"; fi \
-    | awk '$1=="id:"{printf "  %s\n",$2}'
+    | awk '$1=="-" && $2=="id:"{printf "  %s\n",$3} $1=="id:"{printf "  %s\n",$2}'
 }
 
 case "${1:-}" in
