@@ -4,7 +4,7 @@
 
 **Dominio:** Initial Access / Phishing
 **MITRE ATT&CK:** T1566.001, T1204.002, T1059
-**Estado:** 🚧 work in progress — contenido en construcción.
+**Estado:**  work in progress — contenido en construcción.
 
 ---
 

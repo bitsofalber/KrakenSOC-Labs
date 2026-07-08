@@ -101,15 +101,15 @@ skills[]                # e.g. ["Wireshark", "DNS", "Network Forensics"]
 categories[]            # e.g. ["Network Forensics"]
 tags[]
 mitre:                  # tactics/techniques
-  tactics[]             #   e.g. ["Exfiltration"]
-  techniques[]          #   e.g. ["T1048.003", "T1071.004"]
+  tactics[]             # e.g. ["Exfiltration"]
+  techniques[]          # e.g. ["T1048.003", "T1071.004"]
 attack_chain[]          # ordered human-readable steps
 runtime:
-  containers[]          #   name, image, role, healthcheck
-  ports[]               #   host:container mappings exposed to the student
-  supported_platforms[] #   ["linux/amd64", "linux/arm64"]
-  docker_images[]       #   fully-qualified image refs (GHCR)
-  minimum_requirements: #   ram_mb, disk_mb, cpus
+  containers[]          # name, image, role, healthcheck
+  ports[]               # host:container mappings exposed to the student
+  supported_platforms[] # ["linux/amd64", "linux/arm64"]
+  docker_images[]       # fully-qualified image refs (GHCR)
+  minimum_requirements: # ram_mb, disk_mb, cpus
 ioc[]                   # summary indicators (full list in ioc/)
 telemetry[]             # what telemetry the lab produces (sysmon, zeek…)
 evidence[]              # categories present (windows_logs, pcaps, emails…)

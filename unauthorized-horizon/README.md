@@ -4,7 +4,7 @@
 
 **Dominio:** Cloud / Unauthorized Access
 **MITRE ATT&CK:** T1078, T1530, T1580
-**Estado:** 🚧 work in progress — contenido en construcción.
+**Estado:**  work in progress — contenido en construcción.
 
 ---
 

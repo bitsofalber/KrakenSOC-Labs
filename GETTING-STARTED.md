@@ -107,7 +107,7 @@ cd KrakenSOC-Labs/silent-harvest
 ./verify.sh
 
 # 5) Investiga con la evidencia generada (p.ej. la carpeta pcaps/),
-#    abre la ficha del lab en KrakenSOC y responde las preguntas para ganar XP.
+# abre la ficha del lab en KrakenSOC y responde las preguntas para ganar XP.
 
 # 6) Al terminar, apaga y limpia todo
 ./destroy.sh

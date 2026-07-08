@@ -4,7 +4,7 @@
 
 **Dominio:** Credential Access / Active Directory
 **MITRE ATT&CK:** T1558.003, T1558.001, T1550.003
-**Estado:** 🚧 work in progress — contenido en construcción.
+**Estado:**  work in progress — contenido en construcción.
 
 ---
 

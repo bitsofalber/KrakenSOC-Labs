@@ -4,7 +4,7 @@
 
 **Dominio:** Privilege Escalation (Linux)
 **MITRE ATT&CK:** T1548, T1068, T1053.003
-**Estado:** 🚧 work in progress — contenido en construcción.
+**Estado:**  work in progress — contenido en construcción.
 
 ---
 

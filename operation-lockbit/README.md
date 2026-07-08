@@ -4,7 +4,7 @@
 
 **Dominio:** Impact / Ransomware (defensivo)
 **MITRE ATT&CK:** T1486, T1490, T1489
-**Estado:** 🚧 work in progress — contenido en construcción.
+**Estado:**  work in progress — contenido en construcción.
 
 ---
 

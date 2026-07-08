@@ -4,7 +4,7 @@
 
 **Dominio:** Command & Control / Beaconing
 **MITRE ATT&CK:** T1071, T1573, T1008
-**Estado:** 🚧 work in progress — contenido en construcción.
+**Estado:**  work in progress — contenido en construcción.
 
 ---
 

@@ -5,7 +5,7 @@
 
 **SOCForge is the brain. Docker is the execution environment. GitHub is the distribution platform.**
 
-> 🚀 **¿Nuevo con Docker?** Empieza por la **[Guía: Antes de empezar](./GETTING-STARTED.md)** — instalar Docker y Compose v2 en Kali, arreglar el error de `docker compose` y lanzar tu primer lab paso a paso.
+>  **¿Nuevo con Docker?** Empieza por la **[Guía: Antes de empezar](./GETTING-STARTED.md)** — instalar Docker y Compose v2 en Kali, arreglar el error de `docker compose` y lanzar tu primer lab paso a paso.
 
 Docker Runtime Labs are **not** standalone labs — they are official downloadable extensions of KrakenSOC.
 Students discover a lab inside KrakenSOC, download the runtime, run one script, investigate locally, then

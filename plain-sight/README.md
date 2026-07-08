@@ -57,8 +57,8 @@ The images are built from multi-arch bases (`python:3.12-slim`, `alpine`), so th
 
 | Your machine | Architecture | Status |
 | :-- | :-- | :-- |
-| Mac M1/M2/M3/M4, ARM PCs | `arm64` | ✅ native |
-| Intel/AMD PCs, Intel Mac | `amd64` | ✅ native |
+| Mac M1/M2/M3/M4, ARM PCs | `arm64` | native |
+| Intel/AMD PCs, Intel Mac | `amd64` | native |
 
 `./doctor.sh` detects your architecture and stops early with a clear message if it is unsupported.
 Nothing to choose, nothing to configure — the same `./deploy.sh` works everywhere.

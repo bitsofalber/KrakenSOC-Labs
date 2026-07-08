@@ -4,7 +4,7 @@
 
 **Dominio:** Perimeter / Exploitation of Public-Facing App
 **MITRE ATT&CK:** T1190, T1133, T1505.003
-**Estado:** 🚧 work in progress — contenido en construcción.
+**Estado:**  work in progress — contenido en construcción.
 
 ---
 

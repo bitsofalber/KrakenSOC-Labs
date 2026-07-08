@@ -4,7 +4,7 @@
 
 **Dominio:** Identity / Cloud (M365)
 **MITRE ATT&CK:** T1078.004, T1114, T1528, T1550.001
-**Estado:** 🚧 work in progress — contenido en construcción.
+**Estado:**  work in progress — contenido en construcción.
 
 ---
 
