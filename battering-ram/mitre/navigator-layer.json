@@ -1,0 +1,14 @@
+{
+  "name": "Battering Ram",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Authentication attack hunt (Splunk) — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1110", "score": 100, "comment": "Brute Force" },
+    { "techniqueID": "T1110.003", "score": 100, "comment": "Password Spraying" },
+    { "techniqueID": "T1078", "score": 80, "comment": "Valid Accounts (svc_reporting)" },
+    { "techniqueID": "T1136.001", "score": 70, "comment": "Create Account: Local (support)" },
+    { "techniqueID": "T1098", "score": 60, "comment": "Account Manipulation (add to admins)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

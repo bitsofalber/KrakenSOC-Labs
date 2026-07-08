@@ -1,0 +1,7 @@
+step,phase,description,mitre
+1,credential-access,Password spraying: una contraseña contra 19 cuentas desde 45.83.220.50,T1110.003
+2,credential-access,Fuerza bruta dirigida contra administrator; se bloquea,T1110
+3,credential-access,Otras cuentas se bloquean por los intentos repetidos,T1110
+4,initial-access,svc_reporting (contraseña débil) cae: login 4624 válido desde la IP atacante,T1078
+5,persistence,Se crea la cuenta backdoor 'support' (4720),T1136.001
+6,persistence,'support' se añade a Administrators (4732),T1098

@@ -1,0 +1,35 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aquí — las gestiona KrakenSOC.
+lab: battering-ram
+questions:
+  - id: Q1
+    prompt: "¿Cuántos intentos de inicio de sesión fallidos (Event ID 4625) hay en total?"
+    type: number
+    points: 100
+  - id: Q2
+    prompt: "¿Qué dirección IP origen concentra el ataque de autenticación?"
+    type: short_text
+    points: 100
+  - id: Q3
+    prompt: "El atacante probó UNA misma contraseña contra MUCHAS cuentas. ¿Cómo se llama esa técnica?"
+    type: short_text
+    points: 100
+  - id: Q4
+    prompt: "¿Qué cuenta consiguió comprometer el atacante (login 4624 exitoso desde su IP)?"
+    type: short_text
+    points: 100
+  - id: Q5
+    prompt: "¿Cuántas cuentas se bloquearon (Event ID 4740)?"
+    type: number
+    points: 100
+  - id: Q6
+    prompt: "¿Qué cuenta backdoor creó el atacante tras entrar (Event ID 4720)?"
+    type: short_text
+    points: 100
+  - id: Q7
+    prompt: "¿A qué grupo de seguridad añadió esa cuenta backdoor (Event ID 4732)?"
+    type: short_text
+    points: 100
+  - id: Q8
+    prompt: "Decodifica el -EncodedCommand que ejecutó tras el compromiso y recupera la flag (NORTHWIND{...})."
+    type: flag
+    points: 300

@@ -1,0 +1,6 @@
+# Override de mantenedor: construye el forge en local en vez de hacer pull.
+# (Splunk siempre se descarga de Docker Hub; no se construye.)
+# Uso: docker compose -f docker-compose.yml -f docker-compose.build.yml build
+services:
+  forge:
+    build: ./runtime/forge

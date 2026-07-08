@@ -1,0 +1,7 @@
+type,value,context
+ipv4,45.83.220.50,IP del atacante (password spraying + fuerza bruta)
+account,svc_reporting,Cuenta comprometida (contraseña débil)
+account,administrator,Objetivo de la fuerza bruta (se bloqueó)
+account,support,Cuenta backdoor creada tras la intrusión
+host,NW-SRV-APP01,Host donde el atacante inició sesión
+group,Administrators,Grupo al que se añadió la backdoor

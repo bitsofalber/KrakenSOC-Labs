@@ -1,0 +1,125 @@
+# SFRS manifest — Battering Ram. Validado contra ../schema/manifest.schema.json.
+# Lab de clase "interactive" (SFRS §11): expone Splunk Web. SOLO amd64 (Splunk).
+spec_version: "1.0.0"
+
+id: battering-ram
+title: "Battering Ram"
+version: "1.0.0"
+difficulty: intermediate
+estimated_duration: 60
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "SIEM"
+  - "Splunk"
+  - "SPL"
+  - "Threat Hunting"
+  - "Authentication Attacks"
+  - "Windows Event Logs"
+categories:
+  - "SIEM / Threat Hunting"
+tags:
+  - "splunk"
+  - "spl"
+  - "brute-force"
+  - "password-spraying"
+  - "authentication"
+  - "northwind"
+
+mitre:
+  tactics:
+    - "TA0006 Credential Access"
+    - "TA0001 Initial Access"
+    - "TA0003 Persistence"
+  techniques:
+    - "T1110"        # Brute Force
+    - "T1110.003"    # Password Spraying
+    - "T1078"        # Valid Accounts
+    - "T1136.001"    # Create Account: Local Account
+    - "T1098"        # Account Manipulation
+
+attack_chain:
+  - "Un atacante externo lanza password spraying: una contraseña común contra muchas cuentas del dominio."
+  - "Y fuerza bruta dirigida contra 'administrator', que acaba bloqueada (junto a otras cuentas)."
+  - "Una cuenta con contraseña débil (svc_reporting) cae: el atacante inicia sesión con credenciales válidas."
+  - "Con ese acceso crea una cuenta backdoor y la mete en Administradores, y ejecuta un comando ofuscado."
+
+runtime:
+  containers:
+    - name: splunk
+      image: "splunk/splunk:9.3.2"
+      role: "siem"
+      healthcheck: true
+    - name: forge
+      image: "ghcr.io/bitsofalber/battering-ram-forge"
+      role: "data-generator"
+      healthcheck: true
+  ports:
+    - "8000:8000"
+  supported_platforms:
+    - "linux/amd64"
+  docker_images:
+    - "splunk/splunk:9.3.2"
+    - "python:3.12-slim"
+  minimum_requirements:
+    ram_mb: 4096
+    disk_mb: 8192
+    cpus: 2
+
+ioc:
+  - type: ipv4
+    value: "45.83.220.50"
+    note: "IP del atacante (spray + fuerza bruta)."
+  - type: account
+    value: "svc_reporting"
+    note: "Cuenta comprometida (contraseña débil)."
+  - type: account
+    value: "support"
+    note: "Cuenta backdoor creada tras la intrusión."
+telemetry:
+  - "WinEventLog:Security (4625, 4740, 4624, 4720, 4732)"
+  - "Sysmon (EventID 1 process)"
+evidence:
+  - "siem"
+
+questions:
+  - id: "Q1"
+    title: "¿Cuántos intentos de login fallidos hay?"
+  - id: "Q2"
+    title: "¿Qué IP origen concentra el ataque?"
+  - id: "Q3"
+    title: "¿Qué técnica usó contra muchas cuentas a la vez?"
+  - id: "Q4"
+    title: "¿Qué cuenta consiguió comprometer?"
+  - id: "Q5"
+    title: "¿Cuántas cuentas se bloquearon?"
+  - id: "Q6"
+    title: "¿Qué cuenta backdoor creó el atacante?"
+  - id: "Q7"
+    title: "¿A qué grupo la añadió?"
+  - id: "Q8"
+    title: "Recupera la flag del comando ofuscado."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "Detecting Brute Force & Password Spraying"
+    - "SPL Fundamentals"
+  academy_modules:
+    - "SIEM & Detection Engineering"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1 → L2"
+  certifications:
+    - "Splunk Core Certified User"
+  external:
+    - "https://attack.mitre.org/techniques/T1110/"
+    - "https://attack.mitre.org/techniques/T1110/003/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Un navegador web (para Splunk Web)"

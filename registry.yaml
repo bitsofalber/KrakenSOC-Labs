@@ -36,6 +36,13 @@ labs:
     difficulty: intermediate
     categories: ["SIEM / Threat Hunting"]
 
+  - id: battering-ram
+    status: available
+    path: ./battering-ram
+    title: "Battering Ram"
+    difficulty: intermediate
+    categories: ["SIEM / Threat Hunting"]
+
   - id: silent-harvest
     status: available
     path: ./silent-harvest
