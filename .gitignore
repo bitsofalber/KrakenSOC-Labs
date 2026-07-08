@@ -1,0 +1,9 @@
+# Capturas / artefactos generados en local
+captures/
+*.pcap
+*.pcapng
+# Datos sensibles reconstruidos por los labs
+**/RECOVERED_*
+# SO / editores
+.DS_Store
+Thumbs.db
