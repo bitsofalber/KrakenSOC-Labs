@@ -2,12 +2,15 @@
 # 3 servicios: resolver (C2 DNS), victim (exfiltra + ruido), sniffer (captura).
 # El sniffer comparte el netns del resolver para ver TODO el DNS entrante y
 # escribe la captura en ./pcaps/dns-exfil.pcap (la evidencia del alumno).
-# Imágenes base multi-arch (python:slim, alpine) -> corre en amd64 y arm64.
+#
+# El ALUMNO hace PULL de imágenes ya construidas en GHCR (manifest multi-arch:
+# linux/amd64 + linux/arm64) — no necesita compilar nada. Para construir en
+# local (mantenedores), usa el override:
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml build
 
 services:
   resolver:
-    build: ./runtime/resolver
-    image: ${IMAGE_RESOLVER:-krakensoc/silent-harvest-resolver:local}
+    image: ghcr.io/bitsofalber/silent-harvest-resolver:latest
     container_name: ${LAB_ID:-silent-harvest}-resolver
     environment:
       - EXFIL_DOMAIN=${EXFIL_DOMAIN:-sync-telemetry-cdn.net}
@@ -17,8 +20,7 @@ services:
     networks: [labnet]
 
   sniffer:
-    build: ./runtime/sniffer
-    image: ${IMAGE_SNIFFER:-krakensoc/silent-harvest-sniffer:local}
+    image: ghcr.io/bitsofalber/silent-harvest-sniffer:latest
     container_name: ${LAB_ID:-silent-harvest}-sniffer
     # Comparte la pila de red del resolver: tcpdump ve todo el DNS que le llega.
     network_mode: "service:resolver"
@@ -33,8 +35,7 @@ services:
       - resolver
 
   victim:
-    build: ./runtime/victim
-    image: ${IMAGE_VICTIM:-krakensoc/silent-harvest-victim:local}
+    image: ghcr.io/bitsofalber/silent-harvest-victim:latest
     container_name: ${LAB_ID:-silent-harvest}-victim
     environment:
       - EXFIL_DOMAIN=${EXFIL_DOMAIN:-sync-telemetry-cdn.net}
