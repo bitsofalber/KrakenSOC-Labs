@@ -1,0 +1,158 @@
+# SFRS manifest — Nimbus. Validado contra ../schema/manifest.schema.json.
+# Lab de clase "interactive" (SFRS §11): expone Splunk Web en el host y lo
+# alimenta con telemetría CLOUD (AWS CloudTrail + Azure AD) de una intrusión.
+spec_version: "1.0.0"
+
+id: nimbus
+title: "Nimbus"
+version: "1.0.0"
+difficulty: advanced
+estimated_duration: 90
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "Cloud Security"
+  - "AWS"
+  - "CloudTrail"
+  - "SIEM"
+  - "Splunk"
+  - "SPL"
+  - "Threat Hunting"
+  - "Incident Response"
+categories:
+  - "Cloud Security"
+tags:
+  - "cloud"
+  - "aws"
+  - "cloudtrail"
+  - "azure-ad"
+  - "splunk"
+  - "spl"
+  - "siem"
+  - "threat-hunting"
+  - "northwind"
+
+mitre:
+  tactics:
+    - "TA0001 Initial Access"
+    - "TA0007 Discovery"
+    - "TA0006 Credential Access"
+    - "TA0003 Persistence"
+    - "TA0005 Defense Evasion"
+    - "TA0009 Collection"
+    - "TA0010 Exfiltration"
+  techniques:
+    - "T1078.004"    # Valid Accounts: Cloud Accounts
+    - "T1526"        # Cloud Service Discovery
+    - "T1580"        # Cloud Infrastructure Discovery
+    - "T1552.005"    # Unsecured Credentials: Cloud Instance Metadata API
+    - "T1098.001"    # Account Manipulation: Additional Cloud Credentials
+    - "T1562.008"    # Impair Defenses: Disable Cloud Logs
+    - "T1530"        # Data from Cloud Storage
+    - "T1537"        # Transfer Data to Cloud Account
+
+attack_chain:
+  - "Acceso inicial (T1078.004): la clave IAM de m.suarez (filtrada) se usa desde una IP foránea; sign-in de 'viaje imposible' de alto riesgo en Azure AD (SSO hacia AWS)."
+  - "Descubrimiento (T1526/T1580): ráfaga de 45 llamadas Describe*/List* enumerando instancias, buckets, usuarios y roles de la cuenta."
+  - "Credential Access (T1552.005): SSRF desde la app web al endpoint de metadatos 169.254.169.254 para robar las credenciales temporales del rol de la instancia."
+  - "Defense Evasion (T1562.008): StopLogging sobre el trail northwind-org-trail para cegar al SOC (e intento fallido de DeleteTrail)."
+  - "Persistencia (T1098.001): CreateAccessKey (clave IAM adicional) y una Lambda 'nw-metrics-sync' de backdoor cuya variable de entorno esconde la flag en base64."
+  - "Colección (T1530): PutBucketPolicy hace público el bucket northwind-hr-exports y se lee payroll_Q3_2026.csv."
+  - "Exfiltración (T1537): la snapshot de la BD y el bucket se comparten con la cuenta AWS externa 600377889922 controlada por el atacante."
+
+runtime:
+  containers:
+    - name: splunk
+      image: "splunk/splunk:9.3.2"
+      role: "siem"
+      healthcheck: true
+    - name: forge
+      image: "ghcr.io/bitsofalber/nimbus-forge"
+      role: "data-generator"
+      healthcheck: true
+  ports:
+    - "8000:8000"
+  # Lab SOLO amd64: la imagen oficial de Splunk no publica arm64. En Apple
+  # Silicon / ARM puede correr emulada (best-effort), pero no es plataforma
+  # soportada. SFRS §11 permite labs de una sola arquitectura para SIEMs cuya
+  # imagen upstream es single-arch.
+  supported_platforms:
+    - "linux/amd64"
+  docker_images:
+    - "splunk/splunk:9.3.2"
+    - "python:3.12-slim"
+  minimum_requirements:
+    ram_mb: 4096
+    disk_mb: 8192
+    cpus: 2
+
+ioc:
+  - type: account
+    value: "m.suarez"
+    note: "Cuenta/clave IAM comprometida (acceso inicial)."
+  - type: ip
+    value: "203.0.113.77"
+    note: "IP foránea del atacante (sign-in de riesgo y toda la actividad)."
+  - type: account
+    value: "600377889922"
+    note: "Cuenta AWS externa del atacante (destino de la exfiltración)."
+  - type: resource
+    value: "northwind-hr-exports"
+    note: "Bucket S3 de RRHH expuesto públicamente y saqueado."
+  - type: resource
+    value: "nw-metrics-sync"
+    note: "Lambda de persistencia (backdoor)."
+telemetry:
+  - "AWS CloudTrail (management events)"
+  - "AWS S3 server access logs"
+  - "Azure AD sign-ins (SSO hacia AWS)"
+  - "Web proxy (SSRF a la IMDS)"
+evidence:
+  - "siem"
+
+questions:
+  - id: "Q1"
+    title: "¿Qué identidad IAM se compromete?"
+  - id: "Q2"
+    title: "¿Desde qué IP opera el atacante?"
+  - id: "Q3"
+    title: "¿Qué llamada API deshabilitó el logging?"
+  - id: "Q4"
+    title: "¿Cuántas llamadas de enumeración (Describe*/List*) hizo el atacante?"
+  - id: "Q5"
+    title: "¿A qué IP de metadatos se accedió por SSRF?"
+  - id: "Q6"
+    title: "¿Qué acción de persistencia creó una credencial nueva?"
+  - id: "Q7"
+    title: "¿Qué bucket S3 sensible se expuso y leyó?"
+  - id: "Q8"
+    title: "¿A qué Account ID externo se exfiltraron los datos?"
+  - id: "Q9"
+    title: "¿Qué Lambda de backdoor creó el atacante?"
+  - id: "Q10"
+    title: "Recupera la flag oculta en la variable de entorno de la Lambda."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "Cloud Threat Hunting con CloudTrail"
+    - "AWS para Analistas SOC"
+  academy_modules:
+    - "Cloud Security & Detection"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1 → L3"
+    - "Cloud Security Analyst"
+  certifications:
+    - "AWS Certified Security – Specialty"
+  external:
+    - "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference.html"
+    - "https://attack.mitre.org/matrices/enterprise/cloud/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Un navegador web (para Splunk Web)"

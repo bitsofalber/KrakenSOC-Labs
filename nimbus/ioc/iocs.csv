@@ -1,0 +1,10 @@
+type,value,note
+account,m.suarez,Clave IAM comprometida (acceso inicial)
+accessKeyId,AKIA4NWDEVMSUAREZ01,Clave IAM filtrada usada desde IP foránea
+accessKeyId,AKIA4NWPERSIST9931X,Clave IAM creada por el atacante (persistencia)
+ip,203.0.113.77,IP foránea del atacante
+account,600377889922,Cuenta AWS externa del atacante (exfiltración)
+resource,northwind-hr-exports,Bucket S3 de RRHH expuesto y saqueado
+resource,nw-metrics-sync,Lambda de persistencia (backdoor)
+resource,northwind-org-trail,CloudTrail deshabilitado (StopLogging)
+ip,169.254.169.254,Endpoint IMDS accedido por SSRF

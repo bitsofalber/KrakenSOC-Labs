@@ -1,0 +1,15 @@
+title: Data Transfer to External Cloud Account
+id: nimbus-cross-account
+status: experimental
+description: PutBucketPolicy/ModifySnapshotAttribute conceden acceso a un Account ID externo — exfiltración a cuenta cloud del atacante.
+logsource: { product: aws, service: cloudtrail }
+detection:
+  selection:
+    eventName:
+      - ModifySnapshotAttribute
+      - PutBucketPolicy
+  external:
+    requestParameters|contains: 'arn:aws:iam::'
+  condition: selection and external
+level: high
+tags: [attack.exfiltration, attack.t1537]

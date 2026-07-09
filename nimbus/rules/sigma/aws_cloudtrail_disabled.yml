@@ -1,0 +1,14 @@
+title: AWS CloudTrail Logging Disabled
+id: nimbus-ct-disabled
+status: experimental
+description: Detecta StopLogging/DeleteTrail/UpdateTrail — el atacante ciega el registro de auditoría.
+logsource: { product: aws, service: cloudtrail }
+detection:
+  selection:
+    eventName:
+      - StopLogging
+      - DeleteTrail
+      - UpdateTrail
+  condition: selection
+level: critical
+tags: [attack.defense_evasion, attack.t1562.008]

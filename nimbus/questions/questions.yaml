@@ -1,0 +1,43 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aquí — las gestiona KrakenSOC.
+lab: nimbus
+questions:
+  - id: Q1
+    prompt: "¿Qué identidad IAM (usuario) se compromete al inicio de la intrusión?"
+    type: short_text
+    points: 100
+  - id: Q2
+    prompt: "¿Desde qué dirección IP foránea opera el atacante?"
+    type: short_text
+    points: 100
+  - id: Q3
+    prompt: "¿Qué llamada de API de CloudTrail deshabilitó el registro de auditoría (defense evasion)?"
+    type: short_text
+    points: 100
+  - id: Q4
+    prompt: "¿Cuántas llamadas de enumeración (eventName Describe* o List*) hizo el atacante desde su IP?"
+    type: number
+    points: 150
+  - id: Q5
+    prompt: "¿A qué dirección IP del servicio de metadatos de la instancia (IMDS) se accedió por SSRF?"
+    type: short_text
+    points: 100
+  - id: Q6
+    prompt: "¿Qué acción de API creó una credencial IAM nueva para persistir (persistence)?"
+    type: short_text
+    points: 150
+  - id: Q7
+    prompt: "¿Qué bucket S3 con datos sensibles se expuso públicamente y se leyó?"
+    type: short_text
+    points: 100
+  - id: Q8
+    prompt: "¿A qué Account ID de AWS externo se compartieron los datos (exfiltración)?"
+    type: short_text
+    points: 100
+  - id: Q9
+    prompt: "¿Qué función Lambda de backdoor creó el atacante para persistir?"
+    type: short_text
+    points: 100
+  - id: Q10
+    prompt: "Decodifica la variable de entorno NOTE de la Lambda (base64) y recupera la flag (NORTHWIND{...})."
+    type: flag
+    points: 300

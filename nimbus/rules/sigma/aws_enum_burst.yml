@@ -1,0 +1,14 @@
+title: Cloud Account Enumeration Burst
+id: nimbus-enum-burst
+status: experimental
+description: Pico de llamadas Describe*/List* desde una sola identidad/IP — reconocimiento de la cuenta.
+logsource: { product: aws, service: cloudtrail }
+detection:
+  selection:
+    eventName|startswith:
+      - Describe
+      - List
+  timeframe: 10m
+  condition: selection | count() by sourceIPAddress > 30
+level: medium
+tags: [attack.discovery, attack.t1526, attack.t1580]

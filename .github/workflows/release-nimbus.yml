@@ -1,0 +1,51 @@
+# Publica la imagen del data-forge de nimbus en GHCR como manifest MULTI-ARCH
+# (linux/amd64 + linux/arm64). La flag real se inyecta desde el secret
+# NIMBUS_TOKEN SOLO en el build del forge, así nunca vive en el repo en claro
+# (en el repo solo hay un decoy). Splunk NO se construye: se descarga de Docker Hub.
+#
+# Dispara con un tag 'nimbus-v*' o manualmente (workflow_dispatch).
+name: release-nimbus
+
+on:
+  push:
+    tags: ["nimbus-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inyectar flag real desde el secret
+        run: |
+          printf '%s\n' "${{ secrets.NIMBUS_TOKEN }}" \
+            > nimbus/runtime/forge/seed/flag.txt
+          echo "Flag real inyectada (no se commitea, solo existe en este runner)."
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Login en GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push multi-arch (forge)
+        uses: docker/build-push-action@v6
+        with:
+          context: nimbus/runtime/forge
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/bitsofalber/nimbus-forge:latest
+            ghcr.io/bitsofalber/nimbus-forge:${{ github.ref_name }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/bitsofalber/KrakenSOC-Labs
+            org.opencontainers.image.description=KrakenSOC Runtime Lab — Nimbus (data-forge)

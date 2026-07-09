@@ -1,0 +1,9 @@
+offset_min,tactic,technique,event
++5,Initial Access,T1078.004,Sign-in de riesgo alto en Azure AD (m.suarez) desde 203.0.113.77
++5,Initial Access,T1078.004,GetCallerIdentity con la clave IAM filtrada desde la IP del atacante
++7,Discovery,T1526/T1580,Ráfaga de 45 llamadas Describe*/List* (enumeración de la cuenta)
++11,Credential Access,T1552.005,SSRF a 169.254.169.254 roba las credenciales del rol de la instancia
++13,Defense Evasion,T1562.008,StopLogging sobre northwind-org-trail (intento fallido de DeleteTrail)
++14,Persistence,T1098.001,CreateAccessKey (clave adicional) + Lambda nw-metrics-sync de backdoor
++15,Collection,T1530,PutBucketPolicy hace público northwind-hr-exports; se lee payroll_Q3_2026.csv
++16,Exfiltration,T1537,Snapshot y bucket compartidos con la cuenta AWS externa 600377889922

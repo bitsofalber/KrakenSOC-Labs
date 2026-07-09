@@ -1,0 +1,12 @@
+title: AWS IAM Access Key Created
+id: nimbus-new-key
+status: experimental
+description: CreateAccessKey — clave IAM adicional creada (persistencia tras comprometer credenciales).
+logsource: { product: aws, service: cloudtrail }
+detection:
+  selection:
+    eventName: CreateAccessKey
+  condition: selection
+falsepositives: [Rotación legítima de claves por administradores]
+level: medium
+tags: [attack.persistence, attack.t1098.001]

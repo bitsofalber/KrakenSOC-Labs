@@ -1,0 +1,49 @@
+# ─── Nimbus · SPL de investigación y detección (índice: northwind) ────────────
+# Referencia: las búsquedas canónicas que resuelven cada acto de la campaña
+# cloud. Úsalas como base para correlation searches / alertas.
+
+# Línea base — ¿qué fuentes cloud hay y cuántos eventos?
+index=northwind | stats count by sourcetype
+
+# Q1/Q2 · Acceso inicial: sign-in de riesgo alto (Azure AD SSO -> AWS)
+index=northwind sourcetype=azure:signin riskLevelDuringSignIn=high
+| table _time, userPrincipalName, ipAddress, location
+
+# Q2 · Confirma la IP: actividad de la clave IAM comprometida desde fuera
+index=northwind sourcetype=aws:cloudtrail "userIdentity.userName"=m.suarez
+| stats count values(eventName) by sourceIPAddress
+
+# Q3 · Defense Evasion: quién apagó CloudTrail
+index=northwind sourcetype=aws:cloudtrail eventName IN (StopLogging, DeleteTrail)
+| table _time, eventName, sourceIPAddress, errorCode, requestParameters.name
+
+# Q4 · Descubrimiento: nº de llamadas de enumeración desde la IP del atacante
+index=northwind sourcetype=aws:cloudtrail sourceIPAddress=203.0.113.77
+   (eventName=Describe* OR eventName=List*)
+| stats count
+
+# Q5 · Credential Access: SSRF a la IMDS
+index=northwind sourcetype=proxy:web dest_ip=169.254.169.254
+| table _time, src_instance, uri
+
+# Q6 · Persistencia: creación de credencial IAM nueva
+index=northwind sourcetype=aws:cloudtrail eventName=CreateAccessKey
+| table _time, sourceIPAddress, requestParameters.userName,
+        responseElements.accessKey.accessKeyId
+
+# Q7 · Collection: bucket sensible leído por el atacante / anónimo
+index=northwind sourcetype=aws:s3:serveraccess remote_ip=203.0.113.77
+| stats values(key) by bucket
+
+# Q8 · Exfiltración: a qué cuenta externa se comparten datos
+index=northwind sourcetype=aws:cloudtrail
+   eventName IN (ModifySnapshotAttribute, PutBucketPolicy)
+| spath | search requestParameters=*600377889922* OR requestParameters=*arn:aws:iam::6*
+| table _time, eventName, requestParameters
+
+# Q9/Q10 · Persistencia Lambda + flag oculta en su variable de entorno
+index=northwind sourcetype=aws:cloudtrail eventName=CreateFunction*
+| rex field=_raw "\"NOTE\":\s*\"(?<note_b64>[^\"]+)\""
+| eval flag_note=urldecode(note_b64)
+| table _time, requestParameters.functionName, note_b64
+# Copia note_b64 y decodifícalo (base64): la flag NORTHWIND{...} va en el comentario.

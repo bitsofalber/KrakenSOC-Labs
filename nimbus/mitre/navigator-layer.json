@@ -1,0 +1,21 @@
+{
+  "name": "Nimbus",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Cloud SIEM lab — full Northwind AWS intrusion (CloudTrail + Azure AD, Splunk) — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1078.004", "score": 90, "comment": "Valid Accounts: Cloud (clave IAM de m.suarez, sign-in de riesgo)" },
+    { "techniqueID": "T1526", "score": 90, "comment": "Cloud Service Discovery (ráfaga List*)" },
+    { "techniqueID": "T1580", "score": 90, "comment": "Cloud Infrastructure Discovery (ráfaga Describe*)" },
+    { "techniqueID": "T1552.005", "score": 90, "comment": "Cloud Instance Metadata API (SSRF a la IMDS)" },
+    { "techniqueID": "T1098.001", "score": 90, "comment": "Additional Cloud Credentials (CreateAccessKey)" },
+    { "techniqueID": "T1562.008", "score": 95, "comment": "Disable Cloud Logs (StopLogging)" },
+    { "techniqueID": "T1530", "score": 90, "comment": "Data from Cloud Storage (bucket S3 público)" },
+    { "techniqueID": "T1537", "score": 90, "comment": "Transfer Data to Cloud Account (share a cuenta externa)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 },
+  "legendItems": [],
+  "showTacticRowBackground": true,
+  "tacticRowBackground": "#dddddd",
+  "selectTechniquesAcrossTactics": true
+}

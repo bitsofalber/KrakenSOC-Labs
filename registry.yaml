@@ -15,6 +15,13 @@ labs:
     difficulty: advanced
     categories: ["Network Forensics"]
 
+  - id: nimbus
+    status: available
+    path: ./nimbus
+    title: "Nimbus"
+    difficulty: advanced
+    categories: ["Cloud Security"]
+
   - id: overwatch
     status: available
     path: ./overwatch
