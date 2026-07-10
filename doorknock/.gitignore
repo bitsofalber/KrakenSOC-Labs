@@ -1,0 +1,7 @@
+.env
+logs/*
+telemetry/*
+!**/.gitkeep
+**/RECOVERED_*
+*.tmp
+.DS_Store

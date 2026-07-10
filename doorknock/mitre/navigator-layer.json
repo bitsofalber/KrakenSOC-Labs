@@ -1,0 +1,11 @@
+{
+  "name": "Doorknock",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Nmap port scan / service discovery lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1046", "score": 100, "comment": "Network Service Discovery (escaneo de servicios)" },
+    { "techniqueID": "T1595.001", "score": 70, "comment": "Active Scanning: Scanning IP Blocks" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

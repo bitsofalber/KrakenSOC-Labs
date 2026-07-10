@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,reconnaissance,Atacante lanza un escaneo de puertos Nmap contra el servidor,T1595.001
+2,discovery,Los puertos abiertos responden SYN-ACK; se enumeran los servicios,T1046
+3,discovery,Nmap -sV recoge banners; el 8080 filtra la service-key,T1046

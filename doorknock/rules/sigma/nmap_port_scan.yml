@@ -1,0 +1,26 @@
+title: Network Port Scan / Service Discovery
+id: 999605b8-cbf8-42ce-a7d2-c187b47bf28f
+status: experimental
+description: >
+  Detecta un escaneo de puertos (muchas conexiones TCP cortas a puertos distintos
+  desde un mismo origen) — reconocimiento de servicios de red (MITRE ATT&CK T1046).
+references:
+  - https://attack.mitre.org/techniques/T1046/
+  - https://attack.mitre.org/techniques/T1595/
+author: KrakenSOC
+date: 2026/07/10
+logsource:
+  category: firewall
+detection:
+  selection:
+    action: 'denied'
+  timeframe: 10s
+  condition: selection | count(dst_port) by src_ip > 20
+falsepositives:
+  - Escaneos de inventario/vulnerabilidades autorizados
+level: medium
+tags:
+  - attack.discovery
+  - attack.t1046
+  - attack.reconnaissance
+  - attack.t1595.001

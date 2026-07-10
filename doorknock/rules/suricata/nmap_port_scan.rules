@@ -1,0 +1,9 @@
+# Doorknock — reglas Suricata para escaneo de puertos (reconocimiento)
+# (T1046 Network Service Discovery / T1595 Active Scanning)
+
+# 1) Deteccion de escaneo horizontal/vertical por umbral de conexiones
+alert tcp any any -> any any (msg:"KRAKENSOC TCP port scan detected (many SYN, few completions)"; \
+  flags:S; flow:to_server; \
+  threshold:type both, track by_src, count 20, seconds 10; \
+  classtype:attempted-recon; sid:2100601; rev:1; \
+  metadata:mitre_technique_id T1046;)

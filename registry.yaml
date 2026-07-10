@@ -29,6 +29,13 @@ labs:
     difficulty: beginner
     categories: ["Network Forensics"]
 
+  - id: doorknock
+    status: available
+    path: ./doorknock
+    title: "Doorknock"
+    difficulty: intermediate
+    categories: ["Network Forensics"]
+
   - id: ghost-protocol
     status: available
     path: ./ghost-protocol

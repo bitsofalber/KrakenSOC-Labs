@@ -1,0 +1,5 @@
+type,value,context
+behaviour,TCP SYN scan,Muchas conexiones cortas a puertos distintos (patron Nmap)
+port,8080/tcp,Panel de admin cuyo banner filtra una service-key
+port,22/tcp;80/tcp;3306/tcp,Servicios abiertos descubiertos por el escaneo
+tool,nmap,Escaner de puertos usado en el reconocimiento

@@ -1,0 +1,105 @@
+spec_version: "1.0.0"
+id: doorknock
+title: "Doorknock"
+version: "1.0.0"
+difficulty: intermediate
+estimated_duration: 40
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "Port Scanning"
+  - "Reconnaissance Analysis"
+categories:
+  - "Network Forensics"
+tags:
+  - "nmap"
+  - "port-scan"
+  - "reconnaissance"
+  - "service-discovery"
+  - "wireshark"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0007 Discovery"
+    - "TA0043 Reconnaissance"
+  techniques:
+    - "T1046"        # Network Service Discovery
+    - "T1595.001"    # Active Scanning: Scanning IP Blocks
+attack_chain:
+  - "Un atacante en la red de Northwind lanza un escaneo de puertos (Nmap) contra un servidor interno."
+  - "El escaneo genera SYN a muchos puertos; los abiertos responden SYN-ACK y los cerrados con RST."
+  - "Nmap (-sV) recoge los banners de los servicios; el panel de admin (8080) filtra una service-key."
+  - "Un analista con la captura reconstruye qué puertos estan abiertos y saca el secreto del banner."
+runtime:
+  containers:
+    - name: target
+      image: "ghcr.io/bitsofalber/doorknock-target"
+      role: "scanned-host"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/doorknock-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: attacker
+      image: "ghcr.io/bitsofalber/doorknock-attacker"
+      role: "scanner-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: behaviour
+    value: "TCP SYN scan (many ports, short-lived connections)"
+    note: "Patron de escaneo Nmap contra el servidor objetivo."
+  - type: port
+    value: "8080/tcp"
+    note: "Panel de admin cuyo banner filtra una service-key."
+telemetry:
+  - "TCP traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que tipo de actividad se observa en la captura?"
+  - id: "Q2"
+    title: "¿Cuantos puertos TCP responden como abiertos en el objetivo?"
+  - id: "Q3"
+    title: "¿En que puerto esta el panel de administracion con el secreto?"
+  - id: "Q4"
+    title: "¿Que producto/servicio anuncia el banner de ese puerto?"
+  - id: "Q5"
+    title: "¿Que tecnica MITRE ATT&CK describe este reconocimiento de servicios?"
+  - id: "Q6"
+    title: "Recupera la service-key del banner (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Networks & Traffic Analysis"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1046/"
+    - "https://attack.mitre.org/techniques/T1595/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

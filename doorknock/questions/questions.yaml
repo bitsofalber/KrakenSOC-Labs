@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: doorknock
+questions:
+  - id: Q1
+    prompt: "¿Que tipo de actividad de red se observa en la captura? (una o dos palabras)"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Cuantos puertos TCP responden como ABIERTOS en el servidor objetivo? (numero)"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿En que puerto TCP esta el panel de administracion que filtra el secreto?"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "¿Que producto/servicio anuncia el banner de ese puerto? (texto del banner)"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿Que tecnica de MITRE ATT&CK describe este reconocimiento de servicios de red? (formato Txxxx)"
+    type: short_text
+    points: 15
+  - id: Q6
+    prompt: "Recupera la service-key del banner del panel de admin (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30
