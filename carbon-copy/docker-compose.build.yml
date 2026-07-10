@@ -1,0 +1,7 @@
+services:
+  smtpd:
+    build: ./runtime/smtpd
+  sniffer:
+    build: ./runtime/sniffer
+  workstation:
+    build: ./runtime/workstation

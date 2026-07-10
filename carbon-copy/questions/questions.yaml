@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: carbon-copy
+questions:
+  - id: Q1
+    prompt: "¿Que protocolo de aplicacion (y puerto) transporta el correo en claro?"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Que direccion de correo figura como remitente (MAIL FROM)?"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿A que direccion de destinatario se envia el correo (RCPT TO)?"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "¿Cual es el asunto (Subject) del correo?"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿Que tecnica de MITRE ATT&CK describe el envio de un correo de phishing con adjunto malicioso? (formato Txxxx.xxx)"
+    type: short_text
+    points: 15
+  - id: Q6
+    prompt: "Decodifica el adjunto (base64) del correo y recupera el token embebido (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30

@@ -1,0 +1,48 @@
+# Carbon Copy — cleartext SMTP phishing capture runtime (SFRS-compliant).
+# 3 servicios: smtpd (relay SMTP legacy en claro), workstation (envia el
+# phishing con adjunto) y sniffer (captura). El sniffer comparte el netns del
+# smtpd y escribe la captura en ./pcaps/smtp-cleartext.pcap.
+services:
+  smtpd:
+    image: ghcr.io/bitsofalber/carbon-copy-smtpd:latest
+    container_name: ${LAB_ID:-carbon-copy}-smtpd
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('localhost',25),2)"]
+      interval: 4s
+      timeout: 3s
+      retries: 10
+    networks: [labnet]
+
+  sniffer:
+    image: ghcr.io/bitsofalber/carbon-copy-sniffer:latest
+    container_name: ${LAB_ID:-carbon-copy}-sniffer
+    network_mode: "service:smtpd"
+    volumes:
+      - ./pcaps:/pcaps
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /pcaps/smtp-cleartext.pcap"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      - smtpd
+
+  workstation:
+    image: ghcr.io/bitsofalber/carbon-copy-workstation:latest
+    container_name: ${LAB_ID:-carbon-copy}-workstation
+    environment:
+      - SMTP_HOST=smtpd
+      - START_DELAY=${START_DELAY:-6}
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/session_done"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    depends_on:
+      - smtpd
+      - sniffer
+    networks: [labnet]
+
+networks:
+  labnet:
+    name: ${LAB_ID:-carbon-copy}-net

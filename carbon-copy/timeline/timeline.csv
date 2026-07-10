@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,initial-access,Correo de phishing entregado por SMTP en claro hacia un empleado,T1566.001
+2,collection,El relay acepta el mensaje sin STARTTLS; cabeceras y adjunto en claro,T1040
+3,collection,El adjunto malicioso (base64) queda reconstruible desde el PCAP,T1040

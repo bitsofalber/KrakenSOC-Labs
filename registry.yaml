@@ -8,6 +8,13 @@ spec_version: "1.0.0"
 repo: https://github.com/bitsofalber/KrakenSOC-Labs
 
 labs:
+  - id: carbon-copy
+    status: available
+    path: ./carbon-copy
+    title: "Carbon Copy"
+    difficulty: beginner
+    categories: ["Network Forensics"]
+
   - id: dead-drop
     status: available
     path: ./dead-drop

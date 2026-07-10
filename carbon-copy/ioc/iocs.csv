@@ -1,0 +1,6 @@
+type,value,context
+email,accounts@northw1nd-billing.com,Remitente de phishing con dominio typosquat (MAIL FROM)
+email,s.buchanan@northwind.example,Destinatario del phishing (RCPT TO)
+file,Factura_Q4_2026.html,Adjunto malicioso codificado en base64
+port,25/tcp,Relay SMTP legacy aceptando correo sin cifrar (sin STARTTLS)
+subject,Factura pendiente Q4 - accion requerida,Asunto del correo de phishing

@@ -1,0 +1,107 @@
+spec_version: "1.0.0"
+id: carbon-copy
+title: "Carbon Copy"
+version: "1.0.0"
+difficulty: beginner
+estimated_duration: 35
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "SMTP"
+  - "Email Analysis"
+  - "Base64 Decoding"
+categories:
+  - "Network Forensics"
+tags:
+  - "smtp"
+  - "cleartext"
+  - "phishing"
+  - "email"
+  - "wireshark"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0001 Initial Access"
+    - "TA0009 Collection"
+  techniques:
+    - "T1566.001"    # Spearphishing Attachment
+    - "T1040"        # Network Sniffing
+attack_chain:
+  - "Northwind usa un relay SMTP interno legacy que acepta correo sin cifrar (puerto 25, sin STARTTLS)."
+  - "Un correo de phishing con un adjunto malicioso pasa por el relay hacia un empleado."
+  - "Como el SMTP va en claro, remitente, destinatario, asunto y adjunto quedan legibles en la red."
+  - "Un analista con la captura reconstruye el correo y decodifica el adjunto (base64) para obtener el payload."
+runtime:
+  containers:
+    - name: smtpd
+      image: "ghcr.io/bitsofalber/carbon-copy-smtpd"
+      role: "legacy-cleartext-smtp"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/carbon-copy-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: workstation
+      image: "ghcr.io/bitsofalber/carbon-copy-workstation"
+      role: "sender-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: email
+    value: "accounts@northw1nd-billing.com"
+    note: "Remitente de phishing con dominio typosquat (1 en vez de i) capturado en MAIL FROM."
+  - type: file
+    value: "Factura_Q4_2026.html"
+    note: "Adjunto malicioso codificado en base64 en el cuerpo del correo."
+telemetry:
+  - "SMTP traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que protocolo/puerto transporta el correo en claro?"
+  - id: "Q2"
+    title: "¿Que direccion figura como remitente (MAIL FROM)?"
+  - id: "Q3"
+    title: "¿A que destinatario se envia (RCPT TO)?"
+  - id: "Q4"
+    title: "¿Cual es el asunto del correo?"
+  - id: "Q5"
+    title: "¿Que tecnica MITRE ATT&CK describe el envio de un phishing con adjunto?"
+  - id: "Q6"
+    title: "Decodifica el adjunto base64 y recupera el token embebido (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Phishing & Email Security"
+    - "Cleartext Protocols & Credential Exposure"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1566/001/"
+    - "https://attack.mitre.org/techniques/T1040/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

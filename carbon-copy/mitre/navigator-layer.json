@@ -1,0 +1,11 @@
+{
+  "name": "Carbon Copy",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Cleartext SMTP phishing capture lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1566.001", "score": 100, "comment": "Spearphishing Attachment (correo con adjunto malicioso)" },
+    { "techniqueID": "T1040", "score": 80, "comment": "Network Sniffing (SMTP en claro expone el mensaje)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

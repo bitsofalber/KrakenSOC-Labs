@@ -1,0 +1,28 @@
+title: Cleartext SMTP Phishing with Attachment
+id: fa4b2433-cb13-4646-b19a-9d5bde6dfb7e
+status: experimental
+description: >
+  Detecta la entrega de un correo de phishing con adjunto sobre SMTP sin cifrar
+  (puerto 25, sin STARTTLS). El mensaje completo, incluido el adjunto base64,
+  queda expuesto en la red (MITRE ATT&CK T1566.001 / T1040).
+references:
+  - https://attack.mitre.org/techniques/T1566/001/
+  - https://attack.mitre.org/techniques/T1040/
+author: KrakenSOC
+date: 2026/07/10
+logsource:
+  category: application
+  product: smtp
+detection:
+  selection:
+    smtp.command: 'MAIL'
+    smtp.mail_from|contains: 'northw1nd'
+  condition: selection
+falsepositives:
+  - Correo interno legitimo (se recomienda exigir STARTTLS/TLS)
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1566.001
+  - attack.exfiltration
+  - attack.t1040

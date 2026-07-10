@@ -1,0 +1,13 @@
+# Carbon Copy — reglas Suricata para phishing por SMTP en claro
+# (T1566.001 Spearphishing Attachment / T1040 Network Sniffing)
+
+# 1) Correo SMTP en claro (puerto 25) sin STARTTLS
+alert smtp any any -> any 25 (msg:"KRAKENSOC Cleartext SMTP mail (no STARTTLS)"; \
+  flow:established,to_server; classtype:policy-violation; sid:2100401; rev:1; \
+  metadata:mitre_technique_id T1040;)
+
+# 2) Remitente typosquat de northwind en MAIL FROM
+alert smtp any any -> any 25 (msg:"KRAKENSOC SMTP MAIL FROM typosquat domain (northw1nd)"; \
+  flow:established,to_server; content:"MAIL FROM"; nocase; content:"northw1nd"; nocase; \
+  classtype:trojan-activity; sid:2100402; rev:1; \
+  metadata:mitre_technique_id T1566.001;)
