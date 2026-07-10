@@ -1,0 +1,14 @@
+# Dead Drop — reglas Suricata para credenciales y exfiltracion por FTP en claro
+# (T1040 Network Sniffing / T1078 Valid Accounts / T1048.003 Exfil Unencrypted)
+
+# 1) Credenciales FTP en claro (comando PASS en el canal de control)
+alert ftp any any -> any 21 (msg:"KRAKENSOC Cleartext FTP credentials (PASS command)"; \
+  flow:established,to_server; content:"PASS "; depth:5; \
+  classtype:credential-theft; sid:2100201; rev:1; \
+  metadata:mitre_technique_id T1040, mitre_technique_id T1078;)
+
+# 2) Descarga de un export .csv por FTP (posible exfiltracion de datos)
+alert ftp any any -> any 21 (msg:"KRAKENSOC FTP RETR of CSV export (possible data exfiltration)"; \
+  flow:established,to_server; content:"RETR "; depth:5; content:".csv"; nocase; \
+  classtype:policy-violation; sid:2100202; rev:1; \
+  metadata:mitre_technique_id T1048.003;)

@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: dead-drop
+questions:
+  - id: Q1
+    prompt: "¿Que protocolo de aplicacion (y puerto) transporta las credenciales en claro?"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Que nombre de cuenta se usa para iniciar sesion en el servidor FTP? (comando USER)"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿Que contrasena viaja en claro en el canal de control? (comando PASS)"
+    type: short_text
+    points: 20
+  - id: Q4
+    prompt: "¿Que fichero se descarga (exfiltra) del servidor? (comando RETR — nombre exacto)"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿Que tecnica de MITRE ATT&CK describe la exfiltracion sobre un protocolo sin cifrar? (formato Txxxx.xxx)"
+    type: short_text
+    points: 10
+  - id: Q6
+    prompt: "Reconstruye el fichero exfiltrado del canal de datos y recupera el token de exportacion (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30

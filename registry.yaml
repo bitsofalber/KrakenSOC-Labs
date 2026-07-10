@@ -8,6 +8,13 @@ spec_version: "1.0.0"
 repo: https://github.com/bitsofalber/KrakenSOC-Labs
 
 labs:
+  - id: dead-drop
+    status: available
+    path: ./dead-drop
+    title: "Dead Drop"
+    difficulty: beginner
+    categories: ["Network Forensics"]
+
   - id: ghost-protocol
     status: available
     path: ./ghost-protocol

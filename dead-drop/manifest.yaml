@@ -1,0 +1,119 @@
+# SFRS manifest — Dead Drop. Validado contra ../schema/manifest.schema.json.
+spec_version: "1.0.0"
+
+id: dead-drop
+title: "Dead Drop"
+version: "1.0.0"
+difficulty: beginner
+estimated_duration: 35
+author: "KrakenSOC"
+license: "MIT"
+
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "FTP"
+  - "File Carving"
+  - "Credential Analysis"
+categories:
+  - "Network Forensics"
+tags:
+  - "ftp"
+  - "cleartext"
+  - "credentials"
+  - "exfiltration"
+  - "wireshark"
+  - "northwind"
+
+mitre:
+  tactics:
+    - "TA0006 Credential Access"
+    - "TA0009 Collection"
+    - "TA0010 Exfiltration"
+  techniques:
+    - "T1040"        # Network Sniffing
+    - "T1078"        # Valid Accounts
+    - "T1048.003"    # Exfiltration Over Unencrypted Non-C2 Protocol
+
+attack_chain:
+  - "Northwind mantiene un servidor FTP interno legacy (Sales File Drop) que nunca se migro a SFTP/FTPS: sigue en FTP sin cifrar."
+  - "Se usa una cuenta de servicio valida (svc_fileshare) para iniciar sesion; el USER y el PASS viajan en claro por el canal de control (puerto 21)."
+  - "Desde el canal de datos (modo pasivo) se descarga un export de clientes confidencial — la exfiltracion."
+  - "Un analista con la captura de red reconstruye credenciales y fichero sin descifrar nada: el fallo es el protocolo en claro."
+
+runtime:
+  containers:
+    - name: ftp-server
+      image: "ghcr.io/bitsofalber/dead-drop-ftp-server"
+      role: "legacy-cleartext-ftp"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/dead-drop-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: workstation
+      image: "ghcr.io/bitsofalber/dead-drop-workstation"
+      role: "attacker-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+
+ioc:
+  - type: credential
+    value: "svc_fileshare"
+    note: "Cuenta de servicio cuyo USER viaja en claro en el canal de control FTP."
+  - type: command
+    value: "RETR customers_q4_export.csv"
+    note: "Descarga del fichero confidencial exfiltrado (canal de datos)."
+telemetry:
+  - "FTP traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+
+questions:
+  - id: "Q1"
+    title: "¿Que protocolo/puerto transporta las credenciales en claro?"
+  - id: "Q2"
+    title: "¿Que cuenta se usa para iniciar sesion en el FTP?"
+  - id: "Q3"
+    title: "¿Que contrasena viaja en claro en el canal de control?"
+  - id: "Q4"
+    title: "¿Que fichero se descarga (exfiltra) del servidor?"
+  - id: "Q5"
+    title: "¿Que tecnica MITRE ATT&CK describe la exfiltracion sobre un protocolo sin cifrar?"
+  - id: "Q6"
+    title: "Recupera el token de exportacion (la flag) embebido en el fichero exfiltrado."
+flags:
+  count: 1
+
+resources:
+  knowledge_guides:
+    - "Cleartext Protocols & Credential Exposure"
+    - "File Carving from Network Captures"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1040/"
+    - "https://attack.mitre.org/techniques/T1048/003/"
+
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

@@ -1,0 +1,5 @@
+step,phase,description,mitre
+1,initial-access,Sesion FTP en claro contra el Sales File Drop con la cuenta svc_fileshare,T1078
+2,credential-access,USER y PASS viajan legibles por el canal de control (puerto 21),T1040
+3,collection,LIST del directorio y descarga del README benigno (reconocimiento),T1083
+4,exfiltration,RETR de customers_q4_export.csv sobre el canal de datos sin cifrar,T1048.003

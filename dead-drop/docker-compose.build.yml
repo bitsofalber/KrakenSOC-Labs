@@ -1,0 +1,10 @@
+# Override de mantenedor: construye las imagenes en local en vez de hacer pull.
+# Uso: docker compose -f docker-compose.yml -f docker-compose.build.yml build
+# (En local, el servidor usa el DECOY de runtime/ftp-server/seed/, no la flag real.)
+services:
+  ftp-server:
+    build: ./runtime/ftp-server
+  sniffer:
+    build: ./runtime/sniffer
+  workstation:
+    build: ./runtime/workstation

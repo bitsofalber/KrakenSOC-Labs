@@ -1,0 +1,7 @@
+type,value,context
+credential,svc_fileshare,Cuenta de servicio cuyo USER viaja en claro en el canal de control FTP
+credential,Rw-Fileshare-2026,Contrasena literal capturada en el comando PASS (sin cifrar)
+command,RETR customers_q4_export.csv,Descarga del fichero confidencial exfiltrado (canal de datos)
+port,21/tcp,Servidor FTP legacy sirviendo el canal de control sin cifrar
+port,30000-30009/tcp,Rango de puertos pasivos del canal de datos FTP
+file,customers_q4_export.csv,Export de clientes confidencial exfiltrado por FTP

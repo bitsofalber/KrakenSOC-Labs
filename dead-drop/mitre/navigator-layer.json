@@ -1,0 +1,13 @@
+{
+  "name": "Dead Drop",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Cleartext FTP credential & file exfiltration lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1040", "score": 100, "comment": "Network Sniffing (credenciales FTP en el cable)" },
+    { "techniqueID": "T1078", "score": 60, "comment": "Valid Accounts (cuenta de servicio svc_fileshare)" },
+    { "techniqueID": "T1048.003", "score": 100, "comment": "Exfiltration Over Unencrypted Non-C2 Protocol (FTP)" },
+    { "techniqueID": "T1083", "score": 30, "comment": "File and Directory Discovery (LIST del share)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}
