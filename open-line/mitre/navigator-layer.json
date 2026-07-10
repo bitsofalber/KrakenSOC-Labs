@@ -1,0 +1,11 @@
+{
+  "name": "Open Line",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Cleartext Telnet admin session capture lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1040", "score": 100, "comment": "Network Sniffing (sesion Telnet en el cable)" },
+    { "techniqueID": "T1078", "score": 60, "comment": "Valid Accounts (cuenta de operador netops)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

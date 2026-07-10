@@ -1,0 +1,5 @@
+step,phase,description,mitre
+1,initial-access,Operador inicia sesion Telnet en claro contra nw-core-rtr01,T1078
+2,credential-access,Usuario y contrasena viajan legibles por el puerto 23,T1040
+3,collection,Ejecuta show running-config: el router vuelca su config en claro,T1040
+4,credential-access,La service-key queda expuesta en el volcado de configuracion,T1040

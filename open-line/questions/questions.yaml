@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: open-line
+questions:
+  - id: Q1
+    prompt: "¿Que protocolo de aplicacion (y puerto) transporta la sesion de administracion en claro?"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Que nombre de cuenta inicia sesion en el router?"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿Que contrasena viaja en claro durante el login?"
+    type: short_text
+    points: 20
+  - id: Q4
+    prompt: "¿Que comando ejecuta el operador para volcar la configuracion del equipo?"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿Que tecnica de MITRE ATT&CK describe la captura de credenciales de la red? (formato Txxxx)"
+    type: short_text
+    points: 10
+  - id: Q6
+    prompt: "Recupera la service-key del volcado de 'show running-config' (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30

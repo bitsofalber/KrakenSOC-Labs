@@ -29,6 +29,13 @@ labs:
     difficulty: advanced
     categories: ["Cloud Security"]
 
+  - id: open-line
+    status: available
+    path: ./open-line
+    title: "Open Line"
+    difficulty: beginner
+    categories: ["Network Forensics"]
+
   - id: overwatch
     status: available
     path: ./overwatch

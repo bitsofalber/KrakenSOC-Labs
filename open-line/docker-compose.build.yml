@@ -1,0 +1,7 @@
+services:
+  telnetd:
+    build: ./runtime/telnetd
+  sniffer:
+    build: ./runtime/sniffer
+  workstation:
+    build: ./runtime/workstation

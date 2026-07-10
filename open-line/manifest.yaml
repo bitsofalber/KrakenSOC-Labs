@@ -1,0 +1,104 @@
+spec_version: "1.0.0"
+id: open-line
+title: "Open Line"
+version: "1.0.0"
+difficulty: beginner
+estimated_duration: 30
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "Telnet"
+  - "Credential Analysis"
+categories:
+  - "Network Forensics"
+tags:
+  - "telnet"
+  - "cleartext"
+  - "credentials"
+  - "network-device"
+  - "wireshark"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0006 Credential Access"
+    - "TA0009 Collection"
+  techniques:
+    - "T1040"        # Network Sniffing
+    - "T1078"        # Valid Accounts
+attack_chain:
+  - "Northwind administra un router core legacy por Telnet en claro (puerto 23) en vez de SSH."
+  - "Un operador inicia sesion: usuario y contrasena viajan legibles por la red."
+  - "Ejecuta 'show running-config' y el equipo vuelca su configuracion — incluida una service-key — en claro."
+  - "Un analista con la captura recupera credenciales y la key sin descifrar nada."
+runtime:
+  containers:
+    - name: telnetd
+      image: "ghcr.io/bitsofalber/open-line-telnetd"
+      role: "legacy-cleartext-telnet"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/open-line-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: workstation
+      image: "ghcr.io/bitsofalber/open-line-workstation"
+      role: "operator-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: credential
+    value: "netops"
+    note: "Cuenta de operador de red cuyo login viaja en claro por Telnet."
+  - type: command
+    value: "show running-config"
+    note: "Vuelca la configuracion del router (incluida la service-key) en claro."
+telemetry:
+  - "Telnet traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que protocolo/puerto transporta la sesion de administracion en claro?"
+  - id: "Q2"
+    title: "¿Que cuenta inicia sesion en el router?"
+  - id: "Q3"
+    title: "¿Que contrasena viaja en claro?"
+  - id: "Q4"
+    title: "¿Que comando vuelca la configuracion del equipo?"
+  - id: "Q5"
+    title: "¿Que tecnica MITRE ATT&CK describe la captura de credenciales de la red?"
+  - id: "Q6"
+    title: "Recupera la service-key (la flag) del volcado de configuracion."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Cleartext Protocols & Credential Exposure"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1040/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

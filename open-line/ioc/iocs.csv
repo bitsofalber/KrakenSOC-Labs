@@ -1,0 +1,6 @@
+type,value,context
+credential,netops,Cuenta de operador cuyo login viaja en claro por Telnet
+credential,NetOps-2026-RtrAdmin,Contrasena capturada en claro durante el login Telnet
+command,show running-config,Vuelca la configuracion del router (incluida la service-key) en claro
+port,23/tcp,Router legacy administrado por Telnet sin cifrar
+host,nw-core-rtr01,Router core cuya sesion de administracion se capturo

@@ -1,0 +1,13 @@
+# Open Line — reglas Suricata para administracion por Telnet en claro
+# (T1040 Network Sniffing / T1078 Valid Accounts)
+
+# 1) Sesion Telnet a un dispositivo de red (puerto 23) — protocolo sin cifrar
+alert tcp any any -> any 23 (msg:"KRAKENSOC Cleartext Telnet session to network device"; \
+  flow:established,to_server; classtype:policy-violation; sid:2100301; rev:1; \
+  metadata:mitre_technique_id T1040;)
+
+# 2) Volcado de configuracion por Telnet (show running-config en claro)
+alert tcp any any -> any 23 (msg:"KRAKENSOC Telnet running-config dump in cleartext"; \
+  flow:established,to_server; content:"show running-config"; nocase; \
+  classtype:policy-violation; sid:2100302; rev:1; \
+  metadata:mitre_technique_id T1040;)

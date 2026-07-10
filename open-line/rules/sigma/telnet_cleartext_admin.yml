@@ -1,0 +1,24 @@
+title: Cleartext Telnet Administration of Network Device
+id: 82a034c2-0f95-4350-a311-d87eb0ebcacd
+status: experimental
+description: >
+  Detecta la administracion de dispositivos de red por Telnet sin cifrar
+  (puerto 23): las credenciales y la salida de comandos como show running-config
+  viajan legibles por la red (MITRE ATT&CK T1040).
+references:
+  - https://attack.mitre.org/techniques/T1040/
+author: KrakenSOC
+date: 2026/07/10
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_port: 23
+    protocol: tcp
+  condition: selection
+falsepositives:
+  - Gestion legitima de equipos legacy por Telnet (se recomienda migrar a SSH)
+level: medium
+tags:
+  - attack.credential_access
+  - attack.t1040
