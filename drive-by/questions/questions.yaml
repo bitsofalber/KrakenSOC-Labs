@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: drive-by
+questions:
+  - id: Q1
+    prompt: "¿Que protocolo de aplicacion (y puerto) transporta la descarga en claro?"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Desde que host (dominio) se descarga el fichero? (cabecera Host)"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿Que nombre de fichero se descarga?"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "¿Con que dos bytes (magic) empieza el fichero descargado, que lo identifican como ejecutable Windows?"
+    type: short_text
+    points: 10
+  - id: Q5
+    prompt: "¿Que tecnica de MITRE ATT&CK describe la transferencia del binario a la maquina? (formato Txxxx)"
+    type: short_text
+    points: 20
+  - id: Q6
+    prompt: "Extrae el binario del PCAP (Export Objects) y recupera el token embebido (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30

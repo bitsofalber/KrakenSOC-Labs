@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,initial-access,Empleado visita un sitio de descargas typosquat por HTTP en claro,T1189
+2,command-and-control,Descarga de un ejecutable malicioso (Invoice_Viewer_Setup.exe),T1105
+3,collection,El binario completo queda reconstruible desde el PCAP sin cifrar,T1105

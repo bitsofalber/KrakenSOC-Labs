@@ -1,0 +1,6 @@
+type,value,context
+domain,cdn.northw1nd-files.com,Host typosquat desde el que se sirve el binario (cabecera Host)
+file,Invoice_Viewer_Setup.exe,Ejecutable malicioso descargado por HTTP en claro
+uri,GET /downloads/Invoice_Viewer_Setup.exe,Peticion de descarga del binario
+port,80/tcp,Descarga por HTTP sin cifrar
+signature,MZ,Magic bytes del fichero descargado (ejecutable Windows PE)

@@ -1,0 +1,7 @@
+services:
+  webserver:
+    build: ./runtime/webserver
+  sniffer:
+    build: ./runtime/sniffer
+  workstation:
+    build: ./runtime/workstation

@@ -1,0 +1,12 @@
+{
+  "name": "Drive By",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Cleartext HTTP malware download lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1105", "score": 100, "comment": "Ingress Tool Transfer (descarga del binario por HTTP)" },
+    { "techniqueID": "T1189", "score": 70, "comment": "Drive-by Compromise (sitio de descargas malicioso)" },
+    { "techniqueID": "T1204.002", "score": 40, "comment": "User Execution: Malicious File" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

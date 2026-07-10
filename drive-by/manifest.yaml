@@ -1,0 +1,108 @@
+spec_version: "1.0.0"
+id: drive-by
+title: "Drive By"
+version: "1.0.0"
+difficulty: beginner
+estimated_duration: 35
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "HTTP"
+  - "Malware Triage"
+  - "File Carving"
+categories:
+  - "Network Forensics"
+tags:
+  - "http"
+  - "malware"
+  - "download"
+  - "drive-by"
+  - "wireshark"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0001 Initial Access"
+    - "TA0011 Command and Control"
+  techniques:
+    - "T1105"        # Ingress Tool Transfer
+    - "T1189"        # Drive-by Compromise
+    - "T1204.002"    # User Execution: Malicious File
+attack_chain:
+  - "Un empleado visita un sitio de descargas typosquat (cdn.northw1nd-files.com) por HTTP en claro."
+  - "Se descarga un 'Invoice Viewer' que en realidad es un ejecutable malicioso (cabecera MZ/PE)."
+  - "Como la descarga va sin cifrar, el binario completo queda capturado y es reconstruible del PCAP."
+  - "Un analista extrae el fichero (Export Objects), lo identifica como ejecutable y saca el token embebido."
+runtime:
+  containers:
+    - name: webserver
+      image: "ghcr.io/bitsofalber/drive-by-webserver"
+      role: "malicious-download-host"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/drive-by-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: workstation
+      image: "ghcr.io/bitsofalber/drive-by-workstation"
+      role: "victim-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: domain
+    value: "cdn.northw1nd-files.com"
+    note: "Host typosquat desde el que se sirve el binario (cabecera Host)."
+  - type: file
+    value: "Invoice_Viewer_Setup.exe"
+    note: "Ejecutable malicioso descargado por HTTP en claro (magic MZ)."
+telemetry:
+  - "HTTP traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que protocolo/puerto transporta la descarga en claro?"
+  - id: "Q2"
+    title: "¿Desde que host (dominio) se descarga el fichero?"
+  - id: "Q3"
+    title: "¿Que nombre de fichero se descarga?"
+  - id: "Q4"
+    title: "¿Con que dos bytes (magic) empieza el fichero, que lo marcan como ejecutable Windows?"
+  - id: "Q5"
+    title: "¿Que tecnica MITRE ATT&CK describe la descarga del binario a la maquina?"
+  - id: "Q6"
+    title: "Extrae el binario y recupera el token embebido (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Malware Analysis Fundamentals"
+    - "File Carving from Network Captures"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1105/"
+    - "https://attack.mitre.org/techniques/T1189/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"
