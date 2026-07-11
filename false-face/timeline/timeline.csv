@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,credential-access,El atacante envenena la cache ARP reclamando la IP del gateway,T1557.002
+2,collection,Los hosts le envian el trafico del gateway (MITM),T1557.002
+3,collection,La victima navega por HTTP en claro; el session_token queda capturado,T1040

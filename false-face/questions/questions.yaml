@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: false-face
+questions:
+  - id: Q1
+    prompt: "¿Que ataque de red se observa en la captura? (dos o tres palabras)"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Que tecnica de MITRE ATT&CK describe este ataque? (formato Txxxx.xxx)"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿Cuantas direcciones MAC distintas afirman ser la IP del gateway? (numero)"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "¿Que protocolo de aplicacion en claro intercepta el atacante?"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿Que ruta HTTP solicita la victima?"
+    type: short_text
+    points: 15
+  - id: Q6
+    prompt: "Recupera el session_token de la respuesta HTTP interceptada (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30

@@ -1,0 +1,25 @@
+title: ARP Cache Poisoning / Spoofing
+id: b4d8df64-4d46-4c8c-bccb-5009d7149957
+status: experimental
+description: >
+  Detecta envenenamiento de cache ARP: una misma IP (la del gateway) anunciada
+  por DOS direcciones MAC distintas, o una avalancha de ARP replies no
+  solicitados (MITRE ATT&CK T1557.002). Se detecta mejor con arpwatch/Zeek.
+references:
+  - https://attack.mitre.org/techniques/T1557/002/
+author: KrakenSOC
+date: 2026/07/11
+logsource:
+  category: network
+  product: zeek
+detection:
+  selection:
+    note: 'ARP::Duplicate_IP_Address'
+  condition: selection
+falsepositives:
+  - Failover de HA / VRRP que legitimamente mueve una IP entre MAC
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1557.002
+  - attack.collection

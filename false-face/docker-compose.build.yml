@@ -1,0 +1,9 @@
+services:
+  gateway:
+    build: ./runtime/gateway
+  sniffer:
+    build: ./runtime/sniffer
+  attacker:
+    build: ./runtime/attacker
+  victim:
+    build: ./runtime/victim

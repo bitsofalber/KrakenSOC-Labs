@@ -1,0 +1,10 @@
+# False Face — reglas Suricata para ARP spoofing / MITM
+# (T1557.002 ARP Cache Poisoning)
+# Nota: la deteccion de ARP suele hacerse mejor con anomaly detection (arpwatch,
+# Zeek), pero se incluye una regla de referencia.
+
+# 1) Exceso de ARP replies (gratuitous ARP flood) — indicador de poisoning
+alert arp any any -> any any (msg:"KRAKENSOC Excessive ARP replies (possible ARP cache poisoning)"; \
+  threshold:type both, track by_src, count 15, seconds 10; \
+  classtype:attempted-recon; sid:2100901; rev:1; \
+  metadata:mitre_technique_id T1557.002;)

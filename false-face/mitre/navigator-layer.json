@@ -1,0 +1,11 @@
+{
+  "name": "False Face",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "ARP spoofing / MITM lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1557.002", "score": 100, "comment": "AiTM: ARP Cache Poisoning" },
+    { "techniqueID": "T1040", "score": 80, "comment": "Network Sniffing (trafico interceptado en claro)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

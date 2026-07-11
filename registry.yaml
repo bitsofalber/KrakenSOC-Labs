@@ -36,6 +36,13 @@ labs:
     difficulty: intermediate
     categories: ["Network Forensics"]
 
+  - id: false-face
+    status: available
+    path: ./false-face
+    title: "False Face"
+    difficulty: intermediate
+    categories: ["Network Forensics"]
+
   - id: ghost-protocol
     status: available
     path: ./ghost-protocol

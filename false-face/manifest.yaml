@@ -1,0 +1,109 @@
+spec_version: "1.0.0"
+id: false-face
+title: "False Face"
+version: "1.0.0"
+difficulty: intermediate
+estimated_duration: 45
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "ARP"
+  - "MITM Analysis"
+categories:
+  - "Network Forensics"
+tags:
+  - "arp"
+  - "spoofing"
+  - "mitm"
+  - "poisoning"
+  - "wireshark"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0006 Credential Access"
+    - "TA0009 Collection"
+  techniques:
+    - "T1557.002"    # Adversary-in-the-Middle: ARP Cache Poisoning
+    - "T1040"        # Network Sniffing
+attack_chain:
+  - "Un atacante en la LAN de Northwind envenena la cache ARP: manda ARP replies diciendo que la IP del gateway es suya."
+  - "Los hosts del segmento actualizan su tabla ARP y empiezan a enviarle a el el trafico del gateway (MITM)."
+  - "La victima navega al portal interno por HTTP en claro; su trafico (con un session_token) queda expuesto."
+  - "Un analista detecta la MAC duplicada para la IP del gateway y recupera el secreto del HTTP interceptado."
+runtime:
+  containers:
+    - name: gateway
+      image: "ghcr.io/bitsofalber/false-face-gateway"
+      role: "spoofed-gateway"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/false-face-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: attacker
+      image: "ghcr.io/bitsofalber/false-face-attacker"
+      role: "arp-poisoner"
+      healthcheck: true
+    - name: victim
+      image: "ghcr.io/bitsofalber/false-face-victim"
+      role: "victim-endpoint"
+      healthcheck: false
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: behaviour
+    value: "Duplicate MAC for gateway IP (ARP replies)"
+    note: "Dos MAC distintas afirman ser la IP del gateway — envenenamiento ARP."
+  - type: uri
+    value: "GET /admin"
+    note: "Peticion HTTP en claro de la victima, interceptada."
+telemetry:
+  - "ARP + HTTP traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que ataque de red se observa?"
+  - id: "Q2"
+    title: "¿Que tecnica MITRE ATT&CK lo describe?"
+  - id: "Q3"
+    title: "¿Cuantas MAC distintas afirman ser la IP del gateway?"
+  - id: "Q4"
+    title: "¿Que protocolo en claro intercepta el atacante?"
+  - id: "Q5"
+    title: "¿Que ruta HTTP solicita la victima?"
+  - id: "Q6"
+    title: "Recupera el session_token de la respuesta HTTP interceptada (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Networks & Traffic Analysis"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1557/002/"
+    - "https://attack.mitre.org/techniques/T1040/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

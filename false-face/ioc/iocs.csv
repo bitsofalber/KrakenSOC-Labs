@@ -1,0 +1,5 @@
+type,value,context
+behaviour,Duplicate MAC for gateway IP,Dos MAC distintas afirman ser la IP del gateway (ARP poisoning)
+behaviour,Gratuitous ARP flood,ARP replies broadcast no solicitados del atacante
+uri,GET /admin,Peticion HTTP en claro de la victima interceptada
+port,80/tcp,Portal interno servido por HTTP sin cifrar
