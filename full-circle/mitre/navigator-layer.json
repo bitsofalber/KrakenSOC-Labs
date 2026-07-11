@@ -1,0 +1,12 @@
+{
+  "name": "Full Circle",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "Multi-stage kill chain capstone lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1046", "score": 100, "comment": "Network Service Discovery (fase 1 recon)" },
+    { "techniqueID": "T1078", "score": 80, "comment": "Valid Accounts (fase 2 login en claro)" },
+    { "techniqueID": "T1048.003", "score": 100, "comment": "Exfiltration Over Non-C2 Protocol (fase 3)" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

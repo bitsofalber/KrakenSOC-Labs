@@ -50,6 +50,13 @@ labs:
     difficulty: intermediate
     categories: ["Network Forensics"]
 
+  - id: full-circle
+    status: available
+    path: ./full-circle
+    title: "Full Circle"
+    difficulty: advanced
+    categories: ["Network Forensics"]
+
   - id: ghost-protocol
     status: available
     path: ./ghost-protocol

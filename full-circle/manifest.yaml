@@ -1,0 +1,108 @@
+spec_version: "1.0.0"
+id: full-circle
+title: "Full Circle"
+version: "1.0.0"
+difficulty: advanced
+estimated_duration: 60
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "Kill Chain Analysis"
+  - "Incident Response"
+categories:
+  - "Network Forensics"
+tags:
+  - "kill-chain"
+  - "multi-stage"
+  - "recon"
+  - "exfiltration"
+  - "capstone"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0043 Reconnaissance"
+    - "TA0006 Credential Access"
+    - "TA0010 Exfiltration"
+  techniques:
+    - "T1046"        # Network Service Discovery
+    - "T1078"        # Valid Accounts
+    - "T1048.003"    # Exfiltration Over Unencrypted Non-C2 Protocol
+attack_chain:
+  - "FASE 1 (recon): el atacante escanea los puertos del servidor interno de Northwind."
+  - "FASE 2 (credential access): inicia sesion en el portal por HTTP en claro con una cuenta de servicio."
+  - "FASE 3 (exfiltration): con la sesion, descarga un export sensible de empleados/nominas."
+  - "El analista reconstruye las 3 fases en un solo PCAP y recupera la flag del fichero exfiltrado."
+runtime:
+  containers:
+    - name: target
+      image: "ghcr.io/bitsofalber/full-circle-target"
+      role: "victim-server"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/full-circle-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: attacker
+      image: "ghcr.io/bitsofalber/full-circle-attacker"
+      role: "attacker-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: credential
+    value: "svc_report"
+    note: "Cuenta de servicio cuyo login viaja en claro (fase 2)."
+  - type: uri
+    value: "GET /admin/export.csv"
+    note: "Descarga del export sensible exfiltrado (fase 3)."
+telemetry:
+  - "TCP/HTTP traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Cual es la primera fase del ataque?"
+  - id: "Q2"
+    title: "¿Que usuario se autentica en el portal?"
+  - id: "Q3"
+    title: "¿Que contrasena viaja en claro?"
+  - id: "Q4"
+    title: "¿Que fichero sensible exfiltra el atacante?"
+  - id: "Q5"
+    title: "¿Que tecnica MITRE ATT&CK describe la primera fase?"
+  - id: "Q6"
+    title: "Reconstruye la exfiltracion y recupera el export_token (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Incident Response: The Framework"
+    - "Networks & Traffic Analysis"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L2"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1046/"
+    - "https://attack.mitre.org/techniques/T1048/003/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

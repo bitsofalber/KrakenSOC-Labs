@@ -1,0 +1,12 @@
+# Full Circle — reglas Suricata para el kill chain multifase
+# (T1046 recon / T1078 valid accounts / T1048.003 exfil)
+
+# 1) Login HTTP en claro con credenciales
+alert http any any -> any any (msg:"KRAKENSOC Cleartext HTTP login (credential access phase)"; \
+  flow:established,to_server; http.method; content:"POST"; http.uri; content:"/login"; \
+  classtype:policy-violation; sid:2101301; rev:1; metadata:mitre_technique_id T1078;)
+
+# 2) Descarga de un export sensible tras autenticacion
+alert http any any -> any any (msg:"KRAKENSOC Sensitive export download (exfiltration phase)"; \
+  flow:established,to_server; http.uri; content:"/admin/export.csv"; nocase; \
+  classtype:policy-violation; sid:2101302; rev:1; metadata:mitre_technique_id T1048.003;)

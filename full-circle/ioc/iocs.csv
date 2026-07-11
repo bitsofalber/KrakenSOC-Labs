@@ -1,0 +1,6 @@
+type,value,context
+credential,svc_report,Cuenta de servicio cuyo login viaja en claro (fase 2)
+credential,Rep0rt-Sync-2026,Contrasena capturada en claro en el POST /login
+uri,GET /admin/export.csv,Descarga del export sensible exfiltrado (fase 3)
+behaviour,port scan,Escaneo de puertos inicial (fase 1 recon)
+port,80/tcp,Portal interno servido por HTTP sin cifrar

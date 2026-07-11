@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: full-circle
+questions:
+  - id: Q1
+    prompt: "¿Cual es la PRIMERA fase del ataque en la captura? (una o dos palabras)"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Que usuario se autentica en el portal (login HTTP en claro)?"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿Que contrasena viaja en claro en el login?"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "¿Que fichero sensible exfiltra el atacante tras autenticarse?"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿Que tecnica de MITRE ATT&CK describe la primera fase (descubrir servicios)? (formato Txxxx)"
+    type: short_text
+    points: 15
+  - id: Q6
+    prompt: "Reconstruye la exfiltracion (export.csv) y recupera el export_token (la flag, NORTHWIND{...})."
+    type: flag
+    points: 30

@@ -1,0 +1,7 @@
+services:
+  target:
+    build: ./runtime/target
+  sniffer:
+    build: ./runtime/sniffer
+  attacker:
+    build: ./runtime/attacker

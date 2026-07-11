@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,reconnaissance,El atacante escanea los puertos del servidor interno,T1046
+2,credential-access,Inicia sesion en el portal por HTTP en claro (svc_report),T1078
+3,exfiltration,Descarga /admin/export.csv (export sensible con la flag),T1048.003

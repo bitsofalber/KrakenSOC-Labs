@@ -1,0 +1,31 @@
+title: Multi-Stage Kill Chain (Recon -> Cred Access -> Exfil)
+id: 5525b82c-ccf5-40c0-bf1e-b05053b1a7ae
+status: experimental
+description: >
+  Correlaciona las fases de un ataque completo en la red: escaneo de puertos
+  (T1046), login HTTP en claro (T1078) y descarga de un export sensible
+  (T1048.003) desde un mismo origen en poco tiempo.
+references:
+  - https://attack.mitre.org/techniques/T1046/
+  - https://attack.mitre.org/techniques/T1048/003/
+author: KrakenSOC
+date: 2026/07/11
+logsource:
+  category: proxy
+detection:
+  selection_login:
+    cs-method: 'POST'
+    cs-uri-stem: '/login'
+  selection_export:
+    cs-uri-stem: '/admin/export.csv'
+  condition: selection_login and selection_export
+falsepositives:
+  - Uso administrativo legitimo del portal (correlacionar con el escaneo previo)
+level: high
+tags:
+  - attack.reconnaissance
+  - attack.t1046
+  - attack.credential_access
+  - attack.t1078
+  - attack.exfiltration
+  - attack.t1048.003
