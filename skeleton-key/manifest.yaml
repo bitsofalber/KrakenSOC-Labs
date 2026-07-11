@@ -1,0 +1,106 @@
+spec_version: "1.0.0"
+id: skeleton-key
+title: "Skeleton Key"
+version: "1.0.0"
+difficulty: advanced
+estimated_duration: 50
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "TLS"
+  - "Decryption"
+  - "C2 Analysis"
+categories:
+  - "Network Forensics"
+tags:
+  - "tls"
+  - "decryption"
+  - "c2"
+  - "rsa"
+  - "wireshark"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0011 Command and Control"
+  techniques:
+    - "T1573.002"    # Encrypted Channel: Asymmetric Cryptography
+    - "T1071.001"    # Application Layer Protocol: Web
+attack_chain:
+  - "Un implante en Northwind se comunica con su C2 por TLS (parece opaco)."
+  - "Pero el C2 esta mal configurado: usa key exchange RSA (sin forward secrecy) en vez de ECDHE."
+  - "El equipo de IR recupero la clave privada del servidor (resources/decrypt-me.key)."
+  - "Con esa clave se descifra TODO el trafico capturado y se lee el tasking del C2 (con la flag)."
+runtime:
+  containers:
+    - name: c2server
+      image: "ghcr.io/bitsofalber/skeleton-key-c2server"
+      role: "tls-c2"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/skeleton-key-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: implant
+      image: "ghcr.io/bitsofalber/skeleton-key-implant"
+      role: "beacon-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: domain
+    value: "updates.northw1nd-cdn.com"
+    note: "SNI/CN del C2 (typosquat), visible en el ClientHello sin descifrar."
+  - type: tls
+    value: "TLS_RSA_WITH_AES_128_CBC_SHA"
+    note: "Cipher con key exchange RSA (sin forward secrecy) — descifrable con la clave privada."
+telemetry:
+  - "TLS traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "resources"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que protocolo cifra el canal C2 (y puerto)?"
+  - id: "Q2"
+    title: "¿Que version de TLS se negocia?"
+  - id: "Q3"
+    title: "¿Que intercambio de claves usa el cipher (lo hace descifrable)?"
+  - id: "Q4"
+    title: "¿Que dominio (SNI) contacta el implante?"
+  - id: "Q5"
+    title: "¿Que tecnica MITRE ATT&CK describe el C2 cifrado asimetrico?"
+  - id: "Q6"
+    title: "Descifra el TLS con la clave y recupera el decrypt_key del tasking (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Cryptography & Encoding for Analysts"
+    - "Networks & Traffic Analysis"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L2"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1573/002/"
+    - "https://wiki.wireshark.org/TLS"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark (descifrado TLS con clave RSA)"

@@ -1,0 +1,25 @@
+title: TLS C2 with RSA Key Exchange (No Forward Secrecy)
+id: eb242b3d-4e67-4451-ab5f-22e8f740a8f7
+status: experimental
+description: >
+  Detecta un canal C2 sobre TLS con intercambio de claves RSA (sin forward
+  secrecy) hacia un dominio sospechoso. Ademas de ser C2 cifrado (T1573.002), el
+  RSA key exchange permite descifrar el trafico si se recupera la clave privada.
+references:
+  - https://attack.mitre.org/techniques/T1573/002/
+author: KrakenSOC
+date: 2026/07/11
+logsource:
+  category: network
+  product: zeek
+  service: ssl
+detection:
+  selection:
+    server_name|contains: 'northw1nd-cdn'
+  condition: selection
+falsepositives:
+  - CDNs legitimos (verificar el dominio)
+level: high
+tags:
+  - attack.command_and_control
+  - attack.t1573.002

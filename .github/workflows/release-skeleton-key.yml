@@ -1,0 +1,55 @@
+# Publica las imagenes de skeleton-key en GHCR como manifests MULTI-ARCH
+# (linux/amd64 + linux/arm64). El token real (con la flag) se inyecta desde el
+# secret SKELETON_KEY_TOKEN SOLO en el build del c2server, asi nunca vive en el
+# repositorio en claro (en el repo solo hay un decoy).
+#
+# Dispara con un tag 'skeleton-key-v*' o manualmente (workflow_dispatch).
+name: release-skeleton-key
+
+on:
+  push:
+    tags: ["skeleton-key-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [c2server, implant, sniffer]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inyectar token real (solo c2server) desde el secret
+        if: matrix.service == 'c2server'
+        run: |
+          printf '%s\n' "${{ secrets.SKELETON_KEY_TOKEN }}" \
+            > skeleton-key/runtime/c2server/seed/c2_token.txt
+          echo "Token real inyectado (solo en este runner, no se commitea)."
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Login en GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push multi-arch (${{ matrix.service }})
+        uses: docker/build-push-action@v6
+        with:
+          context: skeleton-key/runtime/${{ matrix.service }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/bitsofalber/skeleton-key-${{ matrix.service }}:latest
+            ghcr.io/bitsofalber/skeleton-key-${{ matrix.service }}:${{ github.ref_name }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/bitsofalber/KrakenSOC-Labs
+            org.opencontainers.image.description=KrakenSOC Runtime Lab — Skeleton Key (${{ matrix.service }})

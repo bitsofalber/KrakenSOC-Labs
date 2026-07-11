@@ -127,6 +127,13 @@ labs:
     difficulty: intermediate
     categories: ["Network Forensics"]
 
+  - id: skeleton-key
+    status: available
+    path: ./skeleton-key
+    title: "Skeleton Key"
+    difficulty: advanced
+    categories: ["Network Forensics"]
+
   - id: silent-harvest
     status: available
     path: ./silent-harvest

@@ -1,0 +1,7 @@
+services:
+  c2server:
+    build: ./runtime/c2server
+  sniffer:
+    build: ./runtime/sniffer
+  implant:
+    build: ./runtime/implant

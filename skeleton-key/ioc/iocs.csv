@@ -1,0 +1,5 @@
+type,value,context
+domain,updates.northw1nd-cdn.com,SNI/CN del C2 (typosquat) visible en el ClientHello
+tls,TLS_RSA_WITH_AES_128_CBC_SHA,Cipher con key exchange RSA (descifrable con la clave privada)
+port,443/tcp,Canal C2 sobre TLS
+behaviour,periodic TLS beacon,Implante que hace beacon al C2 a intervalos

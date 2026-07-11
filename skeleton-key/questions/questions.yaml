@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: skeleton-key
+questions:
+  - id: Q1
+    prompt: "¿Que protocolo cifra el canal C2 (y puerto)?"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Que version de TLS se negocia? (formato x.x)"
+    type: short_text
+    points: 10
+  - id: Q3
+    prompt: "¿Que intercambio de claves usa el cipher, y que lo hace descifrable con la clave privada? (una palabra)"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "¿Que dominio (SNI) contacta el implante? (visible en el ClientHello, sin descifrar)"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿Que tecnica de MITRE ATT&CK describe el canal C2 cifrado con criptografia asimetrica? (formato Txxxx.xxx)"
+    type: short_text
+    points: 15
+  - id: Q6
+    prompt: "Carga resources/decrypt-me.key en Wireshark, descifra el TLS y recupera el decrypt_key del tasking (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30

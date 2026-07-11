@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,command-and-control,El implante establece un canal C2 sobre TLS (RSA key exchange),T1573.002
+2,command-and-control,El implante hace beacon y recibe el tasking del C2,T1071.001
+3,analysis,El IR descifra el TLS con la clave privada recuperada y lee el tasking,T1573.002
