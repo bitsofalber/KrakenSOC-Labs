@@ -1,0 +1,65 @@
+# Genera la evidencia (.evtx) del lab Windows "cover-tracks" en un runner
+# windows-latest y la sube como artefacto. La flag va DENTRO de los eventos.
+# Se pasa por input (o por el secret $(echo cover-tracks | tr 'a-z-' 'A-Z_')_TOKEN si se define).
+name: gen-win-cover-tracks
+
+on:
+  workflow_dispatch:
+    inputs:
+      flag:
+        description: "Flag a embeber en la evidencia"
+        required: false
+        default: "NORTHWIND{cl34r3d_but_sysm0n_s4w_1t}"
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generar la evidencia (escenario)
+        shell: powershell
+        env:
+          SI_FLAG: ${{ github.event.inputs.flag }}
+        run: |
+          .\win-events\cover-tracks\generate.ps1 -OutDir "$env:GITHUB_WORKSPACE\evidence"
+
+      - name: Exportar un timeline.csv (todos los .evtx de la evidencia)
+        shell: powershell
+        run: |
+          $ev = @()
+          Get-ChildItem "$env:GITHUB_WORKSPACE\evidence\*.evtx" | ForEach-Object {
+            $name = $_.BaseName
+            try {
+              $ev += Get-WinEvent -Path $_.FullName -ErrorAction SilentlyContinue | ForEach-Object {
+                [PSCustomObject]@{
+                  TimeCreated = $_.TimeCreated.ToString("s")
+                  Log         = $name
+                  EventId     = $_.Id
+                  Level       = $_.LevelDisplayName
+                  Provider    = $_.ProviderName
+                  Message     = ($_.Message -replace "`r`n"," " -replace ",",";")
+                }
+              }
+            } catch {}
+          }
+          $ev | Sort-Object TimeCreated | Export-Csv -NoTypeInformation -Encoding UTF8 "$env:GITHUB_WORKSPACE\evidence\timeline.csv"
+          Get-ChildItem "$env:GITHUB_WORKSPACE\evidence" | Format-Table Name, Length
+
+      - name: Empaquetar el bundle
+        shell: powershell
+        run: |
+          Compress-Archive -Path "$env:GITHUB_WORKSPACE\evidence\*" -DestinationPath "$env:GITHUB_WORKSPACE\cover-tracks-evidence.zip" -Force
+
+      - name: Subir la evidencia como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: cover-tracks-evidence
+          path: |
+            evidence/*.evtx
+            evidence/timeline.csv
+            cover-tracks-evidence.zip
+          retention-days: 7
