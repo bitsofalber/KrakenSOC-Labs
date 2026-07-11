@@ -24,11 +24,31 @@ Write-Host "[*] 2/6 Bajando Defender (para no interferir con el dump de laborato
 Set-MpPreference -DisableRealtimeMonitoring $true -ErrorAction SilentlyContinue
 Add-MpPreference -ExclusionPath "$OutDir" -ErrorAction SilentlyContinue
 
-Write-Host "[*] 3/6 Instalando Sysmon (config SwiftOnSecurity)..."
+Write-Host "[*] 3/6 Instalando Sysmon (config que SI registra ProcessAccess a lsass = Event 10)..."
+# La config comunitaria de SwiftOnSecurity NO registra ProcessAccess (evento 10)
+# por ruido. Para este lab (deteccion de dumping de LSASS) usamos una config
+# minima propia que captura ProcessCreate, FileCreate y ProcessAccess->lsass.
+$cfg = @"
+<Sysmon schemaversion="4.50">
+  <EventFiltering>
+    <RuleGroup name="pc" groupRelation="or">
+      <ProcessCreate onmatch="exclude" />
+    </RuleGroup>
+    <RuleGroup name="fc" groupRelation="or">
+      <FileCreate onmatch="exclude" />
+    </RuleGroup>
+    <RuleGroup name="pa" groupRelation="or">
+      <ProcessAccess onmatch="include">
+        <TargetImage condition="image">lsass.exe</TargetImage>
+      </ProcessAccess>
+    </RuleGroup>
+  </EventFiltering>
+</Sysmon>
+"@
+Set-Content -Path "$env:TEMP\sysmonconfig.xml" -Value $cfg -Encoding ASCII
 try {
   Invoke-WebRequest -UseBasicParsing -Uri "https://download.sysinternals.com/files/Sysmon.zip" -OutFile "$env:TEMP\Sysmon.zip"
   Expand-Archive "$env:TEMP\Sysmon.zip" -DestinationPath "$env:TEMP\sysmon" -Force
-  Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/SwiftOnSecurity/sysmon-config/master/sysmonconfig-export.xml" -OutFile "$env:TEMP\sysmonconfig.xml"
   & "$env:TEMP\sysmon\Sysmon64.exe" -accepteula -i "$env:TEMP\sysmonconfig.xml" | Out-Null
   Start-Sleep -Seconds 5
 } catch { Write-Host "[!] Sysmon no disponible: $_" }
