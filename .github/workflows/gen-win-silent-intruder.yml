@@ -1,0 +1,70 @@
+# Genera la evidencia (.evtx) del lab Windows "Silent Intruder" en un runner
+# windows-latest y la sube como artefacto. Es el "forge" de logs de Windows:
+# ejecuta un escenario de intrusion real y exporta Security/Sysmon/PowerShell.
+#
+# La flag va DENTRO de los eventos (en el -EncodedCommand). Se pasa por input
+# (o por el secret SILENT_INTRUDER_TOKEN si se define). Dispara manualmente
+# (workflow_dispatch).
+name: gen-win-silent-intruder
+
+on:
+  workflow_dispatch:
+    inputs:
+      flag:
+        description: "Flag a embeber en el EncodedCommand"
+        required: false
+        default: "NORTHWIND{p0w3rsh3ll_3nc0d3d_1ntrud3r}"
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generar la evidencia (escenario de intrusion)
+        shell: powershell
+        run: |
+          $flag = if ("${{ secrets.SILENT_INTRUDER_TOKEN }}") { "${{ secrets.SILENT_INTRUDER_TOKEN }}" } else { "${{ github.event.inputs.flag }}" }
+          .\win-events\silent-intruder\generate.ps1 -Flag $flag -OutDir "$env:GITHUB_WORKSPACE\evidence"
+
+      - name: Exportar un timeline.csv (para quien no use Event Viewer)
+        shell: powershell
+        run: |
+          $ev = @()
+          foreach ($f in @("Security","Sysmon","PowerShell")) {
+            $p = "$env:GITHUB_WORKSPACE\evidence\$f.evtx"
+            if (Test-Path $p) {
+              try {
+                $ev += Get-WinEvent -Path $p -ErrorAction SilentlyContinue | ForEach-Object {
+                  [PSCustomObject]@{
+                    TimeCreated = $_.TimeCreated.ToString("s")
+                    Log         = $f
+                    EventId     = $_.Id
+                    Level       = $_.LevelDisplayName
+                    Provider    = $_.ProviderName
+                    Message     = ($_.Message -replace "\r?\n"," " -replace ",",";")
+                  }
+                }
+              } catch {}
+            }
+          }
+          $ev | Sort-Object TimeCreated | Export-Csv -NoTypeInformation -Encoding UTF8 "$env:GITHUB_WORKSPACE\evidence\timeline.csv"
+          Get-ChildItem "$env:GITHUB_WORKSPACE\evidence" | Format-Table Name, Length
+
+      - name: Empaquetar el bundle de evidencia
+        shell: powershell
+        run: |
+          Compress-Archive -Path "$env:GITHUB_WORKSPACE\evidence\*" -DestinationPath "$env:GITHUB_WORKSPACE\silent-intruder-evidence.zip" -Force
+
+      - name: Subir la evidencia como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: silent-intruder-evidence
+          path: |
+            evidence/*.evtx
+            evidence/timeline.csv
+            silent-intruder-evidence.zip
+          retention-days: 7
