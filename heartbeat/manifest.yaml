@@ -1,0 +1,107 @@
+spec_version: "1.0.0"
+id: heartbeat
+title: "Heartbeat"
+version: "1.0.0"
+difficulty: intermediate
+estimated_duration: 40
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "ICMP"
+  - "Data Exfiltration"
+  - "Base64 Decoding"
+categories:
+  - "Network Forensics"
+tags:
+  - "icmp"
+  - "tunneling"
+  - "exfiltration"
+  - "covert-channel"
+  - "wireshark"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0010 Exfiltration"
+    - "TA0011 Command and Control"
+  techniques:
+    - "T1095"        # Non-Application Layer Protocol
+    - "T1048.003"    # Exfiltration Over Unencrypted Non-C2 Protocol
+attack_chain:
+  - "Un host comprometido de Northwind evita los proxies y exfiltra datos por un tunel ICMP."
+  - "Trocea el fichero, lo codifica en base64 y saca un trozo en el payload de cada ICMP echo request."
+  - "El ICMP suele estar permitido y poco inspeccionado, asi que los datos salen sin levantar alarmas."
+  - "Un analista con la captura reensambla los payloads, los decodifica y recupera el fichero robado."
+runtime:
+  containers:
+    - name: host
+      image: "ghcr.io/bitsofalber/heartbeat-host"
+      role: "icmp-destination"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/heartbeat-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: attacker
+      image: "ghcr.io/bitsofalber/heartbeat-attacker"
+      role: "compromised-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: behaviour
+    value: "ICMP echo requests with data payloads (tunnel)"
+    note: "Payloads base64 en los ping — canal encubierto de exfiltracion."
+  - type: field
+    value: "service_token"
+    note: "Campo del documento exfiltrado que contiene el secreto."
+telemetry:
+  - "ICMP traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que protocolo se usa para el tunel de exfiltracion?"
+  - id: "Q2"
+    title: "¿Que tecnica MITRE ATT&CK describe usar ICMP como canal encubierto?"
+  - id: "Q3"
+    title: "¿En que codificacion viajan los datos dentro del payload?"
+  - id: "Q4"
+    title: "¿Que etiqueta de clasificacion lleva el documento exfiltrado?"
+  - id: "Q5"
+    title: "¿Que campo del documento contiene el secreto?"
+  - id: "Q6"
+    title: "Reensambla y decodifica los payloads y recupera el token (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Networks & Traffic Analysis"
+    - "Cryptography & Encoding for Analysts"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1095/"
+    - "https://attack.mitre.org/techniques/T1048/003/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

@@ -1,0 +1,5 @@
+type,value,context
+behaviour,ICMP echo requests with data payloads,Canal encubierto de exfiltracion (tunel ICMP)
+encoding,base64,Codificacion de los datos dentro del payload ICMP
+field,service_token,Campo del documento exfiltrado que contiene el secreto
+classification,RESTRICTED,Etiqueta de clasificacion del documento robado

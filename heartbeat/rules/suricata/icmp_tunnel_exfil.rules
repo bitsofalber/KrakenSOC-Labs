@@ -1,0 +1,8 @@
+# Heartbeat — reglas Suricata para tunel ICMP de exfiltracion
+# (T1095 Non-Application Layer Protocol / T1048.003)
+
+# 1) ICMP echo request con payload grande / no estandar (posible tunel)
+alert icmp any any -> any any (msg:"KRAKENSOC ICMP echo request with large/non-standard payload (tunnel)"; \
+  itype:8; dsize:>20; \
+  classtype:policy-violation; sid:2100701; rev:1; \
+  metadata:mitre_technique_id T1095;)

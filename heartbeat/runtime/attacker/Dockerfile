@@ -1,0 +1,6 @@
+FROM python:3.12-slim
+RUN pip install --no-cache-dir scapy==2.5.0
+WORKDIR /app
+COPY exfil.py .
+COPY seed/ /seed/
+CMD ["python", "exfil.py"]

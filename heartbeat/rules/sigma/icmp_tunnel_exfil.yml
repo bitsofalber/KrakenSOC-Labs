@@ -1,0 +1,29 @@
+title: ICMP Tunnel Exfiltration
+id: 542f5d5d-fbba-4903-9e4d-aaafb58f7388
+status: experimental
+description: >
+  Detecta un tunel ICMP de exfiltracion: ICMP echo requests que llevan datos en
+  el payload (base64) en vez del relleno estandar. El ICMP se usa como canal
+  encubierto para sacar datos (MITRE ATT&CK T1095 / T1048.003).
+references:
+  - https://attack.mitre.org/techniques/T1095/
+  - https://attack.mitre.org/techniques/T1048/003/
+author: KrakenSOC
+date: 2026/07/11
+logsource:
+  category: firewall
+detection:
+  selection:
+    protocol: icmp
+    icmp_type: 8
+  filter_size:
+    payload_size: '>20'
+  condition: selection and filter_size
+falsepositives:
+  - Herramientas de diagnostico que usan payloads ICMP grandes
+level: high
+tags:
+  - attack.exfiltration
+  - attack.t1048.003
+  - attack.command_and_control
+  - attack.t1095

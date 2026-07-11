@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,collection,Un host comprometido prepara un documento confidencial para exfiltrar,T1005
+2,exfiltration,Trocea y codifica en base64 el fichero,T1048.003
+3,exfiltration,Saca cada trozo en el payload de un ICMP echo request (tunel),T1095

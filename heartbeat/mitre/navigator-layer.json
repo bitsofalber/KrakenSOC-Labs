@@ -1,0 +1,12 @@
+{
+  "name": "Heartbeat",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "ICMP tunnel exfiltration lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1095", "score": 100, "comment": "Non-Application Layer Protocol (ICMP tunnel)" },
+    { "techniqueID": "T1048.003", "score": 100, "comment": "Exfiltration Over Unencrypted Non-C2 Protocol" },
+    { "techniqueID": "T1005", "score": 40, "comment": "Data from Local System" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

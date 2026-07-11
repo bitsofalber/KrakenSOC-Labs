@@ -43,6 +43,13 @@ labs:
     difficulty: advanced
     categories: ["Network Forensics"]
 
+  - id: heartbeat
+    status: available
+    path: ./heartbeat
+    title: "Heartbeat"
+    difficulty: intermediate
+    categories: ["Network Forensics"]
+
   - id: nimbus
     status: available
     path: ./nimbus
