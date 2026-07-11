@@ -26,9 +26,12 @@ jobs:
 
       - name: Generar la evidencia (escenario de intrusion)
         shell: powershell
+        env:
+          # La flag va por ENV (nunca por linea de comandos, para que no se filtre
+          # en la telemetria de creacion de procesos). Secret si existe, si no el input.
+          SI_FLAG: ${{ secrets.SILENT_INTRUDER_TOKEN != '' && secrets.SILENT_INTRUDER_TOKEN || github.event.inputs.flag }}
         run: |
-          $flag = if ("${{ secrets.SILENT_INTRUDER_TOKEN }}") { "${{ secrets.SILENT_INTRUDER_TOKEN }}" } else { "${{ github.event.inputs.flag }}" }
-          .\win-events\silent-intruder\generate.ps1 -Flag $flag -OutDir "$env:GITHUB_WORKSPACE\evidence"
+          .\win-events\silent-intruder\generate.ps1 -OutDir "$env:GITHUB_WORKSPACE\evidence"
 
       - name: Exportar un timeline.csv (para quien no use Event Viewer)
         shell: powershell
