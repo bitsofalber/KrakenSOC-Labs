@@ -1,0 +1,11 @@
+# Tell Tale — reglas Suricata para C2 sobre TLS identificado por JA3
+# (T1573.002 Encrypted Channel: Asymmetric Cryptography)
+
+# 1) TLS a un dominio typosquat de northwind (SNI)
+alert tls any any -> any any (msg:"KRAKENSOC TLS to typosquat C2 domain (n0rthwind-static)"; \
+  tls.sni; content:"n0rthwind-static.com"; nocase; \
+  classtype:trojan-activity; sid:2101101; rev:1; \
+  metadata:mitre_technique_id T1573.002;)
+
+# 2) (referencia) match por JA3 — requiere ja3-fingerprints habilitado en Suricata
+# alert tls any any -> any any (msg:"KRAKENSOC Known malicious JA3"; ja3.hash; content:"<ja3_hash>"; sid:2101102; rev:1;)

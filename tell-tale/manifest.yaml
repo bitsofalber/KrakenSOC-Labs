@@ -1,0 +1,105 @@
+spec_version: "1.0.0"
+id: tell-tale
+title: "Tell Tale"
+version: "1.0.0"
+difficulty: advanced
+estimated_duration: 50
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "TLS"
+  - "JA3 Fingerprinting"
+  - "Threat Intelligence"
+categories:
+  - "Network Forensics"
+tags:
+  - "tls"
+  - "ja3"
+  - "fingerprint"
+  - "c2"
+  - "wireshark"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0011 Command and Control"
+  techniques:
+    - "T1573.002"    # Encrypted Channel: Asymmetric Cryptography
+    - "T1071.001"    # Application Layer Protocol: Web
+attack_chain:
+  - "Un implante en Northwind hace beacon a su C2 por TLS (no lo desciframos: hay forward secrecy)."
+  - "Pero el analisis se hace por METADATOS: el ClientHello tiene un JA3 distintivo que identifica la herramienta."
+  - "Y el certificado del servidor viaja EN CLARO en el handshake: su Subject filtra el secreto."
+  - "El analista huellea el cliente (JA3) y extrae el campo O del certificado (la flag) sin descifrar nada."
+runtime:
+  containers:
+    - name: c2server
+      image: "ghcr.io/bitsofalber/tell-tale-c2server"
+      role: "tls-c2"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/tell-tale-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: implant
+      image: "ghcr.io/bitsofalber/tell-tale-implant"
+      role: "beacon-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: domain
+    value: "cdn.n0rthwind-static.com"
+    note: "SNI del C2 (typosquat), en claro en el ClientHello."
+  - type: tls
+    value: "JA3 fingerprint of the implant ClientHello"
+    note: "Huella del cliente TLS que identifica la herramienta sin descifrar."
+telemetry:
+  - "TLS traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que protocolo cifra el canal C2 (y puerto)?"
+  - id: "Q2"
+    title: "¿Que dominio (SNI) contacta el implante?"
+  - id: "Q3"
+    title: "¿Que huella del ClientHello identifica la herramienta sin descifrar?"
+  - id: "Q4"
+    title: "¿Que campo del Subject del certificado filtra el secreto?"
+  - id: "Q5"
+    title: "¿Que tecnica MITRE ATT&CK describe el C2 cifrado asimetrico?"
+  - id: "Q6"
+    title: "Extrae el certificado del handshake y recupera el campo O (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Threat Intelligence"
+    - "Networks & Traffic Analysis"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L2"
+  certifications: []
+  external:
+    - "https://github.com/salesforce/ja3"
+    - "https://attack.mitre.org/techniques/T1573/002/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark (+ JA3)"

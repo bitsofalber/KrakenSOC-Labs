@@ -162,6 +162,13 @@ labs:
   - id: phantom-storm
     status: planned
     path: ./phantom-storm
+  - id: tell-tale
+    status: available
+    path: ./tell-tale
+    title: "Tell Tale"
+    difficulty: advanced
+    categories: ["Network Forensics"]
+
   - id: unauthorized-horizon
     status: planned
     path: ./unauthorized-horizon

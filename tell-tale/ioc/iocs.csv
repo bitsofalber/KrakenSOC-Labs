@@ -1,0 +1,5 @@
+type,value,context
+domain,cdn.n0rthwind-static.com,SNI del C2 (typosquat) visible en el ClientHello
+tls,JA3 fingerprint,Huella del ClientHello del implante (identifica la herramienta)
+port,443/tcp,Canal C2 sobre TLS
+cert,Subject O field,El campo Organization del certificado filtra el secreto

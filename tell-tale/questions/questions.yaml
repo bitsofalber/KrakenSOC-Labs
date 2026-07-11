@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: tell-tale
+questions:
+  - id: Q1
+    prompt: "¿Que protocolo cifra el canal C2 (y puerto)?"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Que dominio (SNI) contacta el implante? (visible en el ClientHello)"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿Que huella (fingerprint) del ClientHello permite identificar la herramienta sin descifrar? (acronimo)"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "El certificado del servidor viaja en claro. ¿Que campo del Subject filtra el secreto? (O, CN...)"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿Que tecnica de MITRE ATT&CK describe el canal C2 cifrado asimetrico? (formato Txxxx.xxx)"
+    type: short_text
+    points: 15
+  - id: Q6
+    prompt: "Extrae el certificado del handshake TLS y recupera el campo O del Subject (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30

@@ -1,0 +1,54 @@
+# Publica las imagenes de tell-tale en GHCR (multi-arch). La flag va en el Subject
+# del certificado del C2; el CI REGENERA el cert con la flag real (secret
+# TELL_TALE_TOKEN) SOLO en el build del c2server, asi el repo solo lleva un decoy.
+name: release-tell-tale
+
+on:
+  push:
+    tags: ["tell-tale-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [c2server, implant, sniffer]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Regenerar el cert con la flag real en el Subject (solo c2server)
+        if: matrix.service == 'c2server'
+        run: |
+          openssl req -x509 -newkey rsa:2048 -nodes -days 3650 \
+            -keyout tell-tale/runtime/c2server/server.key \
+            -out tell-tale/runtime/c2server/server.crt \
+            -subj "/CN=cdn.n0rthwind-static.com/O=${{ secrets.TELL_TALE_TOKEN }}/OU=Threat"
+          echo "Cert regenerado con la flag real (no se commitea)."
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Login en GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push multi-arch (${{ matrix.service }})
+        uses: docker/build-push-action@v6
+        with:
+          context: tell-tale/runtime/${{ matrix.service }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/bitsofalber/tell-tale-${{ matrix.service }}:latest
+            ghcr.io/bitsofalber/tell-tale-${{ matrix.service }}:${{ github.ref_name }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/bitsofalber/KrakenSOC-Labs
+            org.opencontainers.image.description=KrakenSOC Runtime Lab — Tell Tale (${{ matrix.service }})

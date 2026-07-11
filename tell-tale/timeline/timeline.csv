@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,command-and-control,El implante hace beacon al C2 por TLS con un JA3 distintivo,T1573.002
+2,analysis,Se huellea el ClientHello (JA3) para identificar la herramienta,T1573.002
+3,analysis,El certificado (en claro) filtra el secreto en su Subject,T1071.001

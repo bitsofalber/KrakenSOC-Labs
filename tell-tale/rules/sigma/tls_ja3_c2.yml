@@ -1,0 +1,26 @@
+title: TLS C2 Identified by JA3 / Suspicious SNI
+id: f6afb3f3-adec-41aa-8a4e-44fa32fd2ecc
+status: experimental
+description: >
+  Detecta un canal C2 sobre TLS por su huella JA3 del ClientHello y/o un SNI
+  typosquat. El JA3 identifica la herramienta aunque el trafico este cifrado
+  (MITRE ATT&CK T1573.002).
+references:
+  - https://github.com/salesforce/ja3
+  - https://attack.mitre.org/techniques/T1573/002/
+author: KrakenSOC
+date: 2026/07/11
+logsource:
+  category: network
+  product: zeek
+  service: ssl
+detection:
+  selection:
+    server_name|contains: 'n0rthwind-static'
+  condition: selection
+falsepositives:
+  - CDNs legitimos (verificar el dominio y el JA3)
+level: high
+tags:
+  - attack.command_and_control
+  - attack.t1573.002

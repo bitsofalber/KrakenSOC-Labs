@@ -1,0 +1,11 @@
+{
+  "name": "Tell Tale",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "TLS JA3 fingerprinting lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1573.002", "score": 100, "comment": "Encrypted Channel: Asymmetric Cryptography" },
+    { "techniqueID": "T1071.001", "score": 60, "comment": "Application Layer Protocol: Web" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}
