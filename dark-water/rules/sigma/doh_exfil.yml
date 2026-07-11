@@ -1,0 +1,28 @@
+title: DNS-over-HTTPS (DoH) Exfiltration to Unauthorized Resolver
+id: 82bd3a57-e731-4c4b-9243-8f62f8b3e970
+status: experimental
+description: >
+  Detecta DoH hacia un resolver no autorizado: DNS tunelizado dentro de HTTPS para
+  evadir el proxy DNS y exfiltrar datos (MITRE ATT&CK T1572 / T1071.004). Bloquea
+  DoH salvo a resolvers aprobados.
+references:
+  - https://attack.mitre.org/techniques/T1572/
+  - https://attack.mitre.org/techniques/T1071/004/
+author: KrakenSOC
+date: 2026/07/11
+logsource:
+  category: network
+  product: zeek
+  service: ssl
+detection:
+  selection:
+    server_name|contains: 'n0rthwind-doh'
+  condition: selection
+falsepositives:
+  - Resolvers DoH corporativos aprobados (allowlist)
+level: high
+tags:
+  - attack.exfiltration
+  - attack.t1572
+  - attack.command_and_control
+  - attack.t1071.004

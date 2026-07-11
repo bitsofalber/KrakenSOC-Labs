@@ -1,0 +1,5 @@
+type,value,context
+domain,dns.n0rthwind-doh.com,Resolver DoH malicioso (typosquat) — SNI del ClientHello
+domain,*.exfil.n0rthwind-doh.com,Subdominios con datos exfiltrados en base64url (?name=)
+tls,TLS_RSA_WITH_AES_128_CBC_SHA,Cipher con key exchange RSA (descifrable con la clave)
+port,443/tcp,Canal DoH sobre TLS

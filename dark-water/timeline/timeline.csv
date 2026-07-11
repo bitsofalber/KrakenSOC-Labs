@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,exfiltration,Un host comprometido tuneliza DNS dentro de HTTPS (DoH),T1572
+2,exfiltration,Cada consulta /resolve?name= lleva un trozo base64url del dato,T1048.003
+3,analysis,El IR descifra el TLS y reensambla las consultas para recuperar el dato,T1071.004

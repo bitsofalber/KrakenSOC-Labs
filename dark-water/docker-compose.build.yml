@@ -1,0 +1,7 @@
+services:
+  doh-server:
+    build: ./runtime/doh-server
+  sniffer:
+    build: ./runtime/sniffer
+  implant:
+    build: ./runtime/implant

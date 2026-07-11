@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: dark-water
+questions:
+  - id: Q1
+    prompt: "¿Que canal encubierto usa el implante para exfiltrar? (acronimo)"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Que dominio (SNI) del resolver DoH contacta el implante?"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿Que tecnica de MITRE ATT&CK describe tunelizar DNS dentro de HTTPS? (formato Txxxx)"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "Tras descifrar, ¿que parametro de la URL /resolve lleva los datos exfiltrados?"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿En que codificacion van los trozos en el subdominio del ?name=? (una palabra)"
+    type: short_text
+    points: 15
+  - id: Q6
+    prompt: "Descifra el TLS (resources/decrypt-me.key), reensambla los ?name= y decodifica: recupera el vpn_token (la flag, NORTHWIND{...})."
+    type: flag
+    points: 30

@@ -1,0 +1,52 @@
+# Publica las imagenes de dark-water en GHCR (multi-arch). El token real (con la
+# flag) se inyecta desde el secret DARK_WATER_TOKEN SOLO en el build del
+# implant (que construye el adjunto del correo), asi nunca vive en el repo.
+name: release-dark-water
+
+on:
+  push:
+    tags: ["dark-water-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [doh-server, implant, sniffer]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inyectar token real (solo implant) desde el secret
+        if: matrix.service == 'implant'
+        run: |
+          printf '%s\n' "${{ secrets.DARK_WATER_TOKEN }}" \
+            > dark-water/runtime/implant/seed/doh_token.txt
+          echo "Token real inyectado (solo en este runner, no se commitea)."
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Login en GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push multi-arch (${{ matrix.service }})
+        uses: docker/build-push-action@v6
+        with:
+          context: dark-water/runtime/${{ matrix.service }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/bitsofalber/dark-water-${{ matrix.service }}:latest
+            ghcr.io/bitsofalber/dark-water-${{ matrix.service }}:${{ github.ref_name }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/bitsofalber/KrakenSOC-Labs
+            org.opencontainers.image.description=KrakenSOC Runtime Lab — Dark Water (${{ matrix.service }})

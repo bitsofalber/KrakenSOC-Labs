@@ -1,0 +1,109 @@
+spec_version: "1.0.0"
+id: dark-water
+title: "Dark Water"
+version: "1.0.0"
+difficulty: advanced
+estimated_duration: 55
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "TLS"
+  - "DNS-over-HTTPS"
+  - "Decryption"
+  - "Data Exfiltration"
+categories:
+  - "Network Forensics"
+tags:
+  - "doh"
+  - "dns-over-https"
+  - "tunneling"
+  - "exfiltration"
+  - "tls"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0010 Exfiltration"
+    - "TA0011 Command and Control"
+  techniques:
+    - "T1572"        # Protocol Tunneling
+    - "T1048.003"    # Exfiltration Over Unencrypted Non-C2 Protocol
+    - "T1071.004"    # Application Layer Protocol: DNS
+attack_chain:
+  - "Un host comprometido de Northwind exfiltra datos por DoH (DNS-over-HTTPS)."
+  - "Cada consulta /resolve?name= lleva un trozo del dato en base64url, dentro de HTTPS."
+  - "Al ir el DNS dentro de HTTPS, el proxy DNS de la empresa no lo ve — canal encubierto."
+  - "El C2 usa TLS con key exchange RSA; el IR descifra, reensambla las consultas y recupera el dato."
+runtime:
+  containers:
+    - name: doh-server
+      image: "ghcr.io/bitsofalber/dark-water-doh-server"
+      role: "malicious-doh-resolver"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/dark-water-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: implant
+      image: "ghcr.io/bitsofalber/dark-water-implant"
+      role: "exfil-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: domain
+    value: "dns.n0rthwind-doh.com"
+    note: "Resolver DoH malicioso (typosquat), SNI del ClientHello."
+  - type: domain
+    value: "*.exfil.n0rthwind-doh.com"
+    note: "Subdominios con los datos exfiltrados en base64url (dentro del ?name=)."
+telemetry:
+  - "TLS/DoH traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "resources"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que canal encubierto usa el implante?"
+  - id: "Q2"
+    title: "¿Que dominio (SNI) del resolver DoH contacta?"
+  - id: "Q3"
+    title: "¿Que tecnica MITRE ATT&CK describe tunelizar DNS en HTTPS?"
+  - id: "Q4"
+    title: "¿Que parametro de /resolve lleva los datos?"
+  - id: "Q5"
+    title: "¿En que codificacion van los trozos?"
+  - id: "Q6"
+    title: "Descifra, reensambla los ?name= y decodifica: recupera el vpn_token (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Networks & Traffic Analysis"
+    - "Cryptography & Encoding for Analysts"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L2"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1572/"
+    - "https://attack.mitre.org/techniques/T1071/004/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark (descifrado TLS con clave RSA)"

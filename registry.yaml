@@ -15,6 +15,13 @@ labs:
     difficulty: beginner
     categories: ["Network Forensics"]
 
+  - id: dark-water
+    status: available
+    path: ./dark-water
+    title: "Dark Water"
+    difficulty: advanced
+    categories: ["Network Forensics"]
+
   - id: dead-drop
     status: available
     path: ./dead-drop

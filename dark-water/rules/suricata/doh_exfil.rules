@@ -1,0 +1,8 @@
+# Dark Water — reglas Suricata para exfiltracion por DoH
+# (T1572 Protocol Tunneling / T1071.004 DNS)
+
+# 1) TLS a un resolver DoH no autorizado (SNI)
+alert tls any any -> any any (msg:"KRAKENSOC TLS to unauthorized DoH resolver (n0rthwind-doh)"; \
+  tls.sni; content:"n0rthwind-doh.com"; nocase; \
+  classtype:trojan-activity; sid:2101201; rev:1; \
+  metadata:mitre_technique_id T1572;)
