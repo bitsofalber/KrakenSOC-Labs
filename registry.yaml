@@ -113,6 +113,13 @@ labs:
     difficulty: intermediate
     categories: ["SIEM / Threat Hunting"]
 
+  - id: relay-race
+    status: available
+    path: ./relay-race
+    title: "Relay Race"
+    difficulty: intermediate
+    categories: ["Network Forensics"]
+
   - id: silent-harvest
     status: available
     path: ./silent-harvest

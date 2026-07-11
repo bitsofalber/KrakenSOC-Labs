@@ -1,0 +1,48 @@
+# Relay Race — SMB/NTLM capture runtime (SFRS-compliant).
+# 3 servicios: smbserver (share SMB con NTLM), client (empleado que se autentica
+# y lee un fichero) y sniffer (captura). El sniffer comparte el netns del
+# smbserver y escribe la captura en ./pcaps/smb-ntlm.pcap.
+services:
+  smbserver:
+    image: ghcr.io/bitsofalber/relay-race-smbserver:latest
+    container_name: ${LAB_ID:-relay-race}-smbserver
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('localhost',445),2)"]
+      interval: 4s
+      timeout: 3s
+      retries: 15
+    networks: [labnet]
+
+  sniffer:
+    image: ghcr.io/bitsofalber/relay-race-sniffer:latest
+    container_name: ${LAB_ID:-relay-race}-sniffer
+    network_mode: "service:smbserver"
+    volumes:
+      - ./pcaps:/pcaps
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /pcaps/smb-ntlm.pcap"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      - smbserver
+
+  client:
+    image: ghcr.io/bitsofalber/relay-race-client:latest
+    container_name: ${LAB_ID:-relay-race}-client
+    environment:
+      - SMB_HOST=smbserver
+      - START_DELAY=${START_DELAY:-8}
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/session_done"]
+      interval: 5s
+      timeout: 3s
+      retries: 24
+    depends_on:
+      - smbserver
+      - sniffer
+    networks: [labnet]
+
+networks:
+  labnet:
+    name: ${LAB_ID:-relay-race}-net

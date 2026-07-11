@@ -1,0 +1,108 @@
+spec_version: "1.0.0"
+id: relay-race
+title: "Relay Race"
+version: "1.0.0"
+difficulty: intermediate
+estimated_duration: 45
+author: "KrakenSOC"
+license: "MIT"
+skills:
+  - "Network Forensics"
+  - "Wireshark"
+  - "tshark"
+  - "SMB"
+  - "NTLM"
+  - "Credential Analysis"
+categories:
+  - "Network Forensics"
+tags:
+  - "smb"
+  - "ntlm"
+  - "credentials"
+  - "windows"
+  - "wireshark"
+  - "northwind"
+mitre:
+  tactics:
+    - "TA0006 Credential Access"
+    - "TA0008 Lateral Movement"
+  techniques:
+    - "T1040"        # Network Sniffing
+    - "T1557.001"    # Adversary-in-the-Middle: LLMNR/NBT-NS/NTLM
+    - "T1021.002"    # SMB/Windows Admin Shares
+attack_chain:
+  - "Un empleado de Northwind accede al share SMB de Finanzas autenticandose con NTLM."
+  - "En el handshake NTLMSSP viajan el usuario, el dominio y la respuesta NTLMv2 (el hash)."
+  - "Un atacante que captura la red obtiene ese hash para crackearlo o hacer NTLM relay."
+  - "El fichero al que accede el cliente (sin cifrado SMB) lleva un secreto, tambien capturado."
+runtime:
+  containers:
+    - name: smbserver
+      image: "ghcr.io/bitsofalber/relay-race-smbserver"
+      role: "smb-file-server"
+      healthcheck: true
+    - name: sniffer
+      image: "ghcr.io/bitsofalber/relay-race-sniffer"
+      role: "packet-capture"
+      healthcheck: true
+    - name: client
+      image: "ghcr.io/bitsofalber/relay-race-client"
+      role: "employee-endpoint"
+      healthcheck: true
+  ports: []
+  supported_platforms:
+    - "linux/amd64"
+    - "linux/arm64"
+  docker_images:
+    - "python:3.12-slim"
+    - "alpine:3.20"
+  minimum_requirements:
+    ram_mb: 2048
+    disk_mb: 4096
+    cpus: 2
+ioc:
+  - type: credential
+    value: "NORTHWIND\\m.calloway"
+    note: "Usuario y dominio capturados en el handshake NTLMSSP."
+  - type: file
+    value: "Payroll_Q4_2026.txt"
+    note: "Fichero del share SMB (sin cifrar) que contiene un secreto."
+telemetry:
+  - "SMB/NTLM traffic (PCAP)"
+evidence:
+  - "pcaps"
+  - "ioc"
+  - "timeline"
+questions:
+  - id: "Q1"
+    title: "¿Que protocolo de fichero se usa (y puerto)?"
+  - id: "Q2"
+    title: "¿Que usuario se autentica en el share?"
+  - id: "Q3"
+    title: "¿Que dominio presenta el cliente en el handshake NTLM?"
+  - id: "Q4"
+    title: "¿Que mecanismo de autenticacion viaja en el handshake?"
+  - id: "Q5"
+    title: "¿Que tecnica MITRE ATT&CK describe capturar la autenticacion NTLM?"
+  - id: "Q6"
+    title: "Lee el fichero del share y recupera el vault_token (la flag)."
+flags:
+  count: 1
+resources:
+  knowledge_guides:
+    - "Windows & Active Directory"
+    - "Networks & Traffic Analysis"
+  academy_modules:
+    - "Network Forensics Fundamentals"
+  operations: []
+  investigations: []
+  career_paths:
+    - "SOC Analyst L1"
+  certifications: []
+  external:
+    - "https://attack.mitre.org/techniques/T1040/"
+    - "https://attack.mitre.org/techniques/T1557/001/"
+required_tools:
+  - "Docker"
+  - "Docker Compose v2"
+  - "Wireshark / tshark"

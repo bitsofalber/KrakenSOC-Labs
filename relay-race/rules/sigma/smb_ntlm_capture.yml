@@ -1,0 +1,27 @@
+title: SMB NTLM Authentication Captured on the Wire
+id: 2a68fc92-2356-4cbf-99de-108cb598490a
+status: experimental
+description: >
+  Detecta autenticacion NTLM (NTLMSSP) sobre SMB en la red. La respuesta NTLMv2
+  puede capturarse para crackeo offline o NTLM relay (MITRE ATT&CK T1040 /
+  T1557.001). Preferir Kerberos y firmar/cifrar SMB.
+references:
+  - https://attack.mitre.org/techniques/T1557/001/
+  - https://attack.mitre.org/techniques/T1040/
+author: KrakenSOC
+date: 2026/07/11
+logsource:
+  category: application
+  product: smb
+detection:
+  selection:
+    auth_mechanism: 'NTLM'
+    dst_port: 445
+  condition: selection
+falsepositives:
+  - Entornos legacy que aun dependen de NTLM sobre SMB
+level: medium
+tags:
+  - attack.credential_access
+  - attack.t1040
+  - attack.t1557.001

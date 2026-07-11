@@ -1,0 +1,8 @@
+# Relay Race — reglas Suricata para autenticacion SMB/NTLM en la red
+# (T1040 / T1557.001)
+
+# 1) Handshake NTLMSSP sobre SMB (auth NTLM capturable)
+alert tcp any any -> any 445 (msg:"KRAKENSOC SMB NTLMSSP authentication observed"; \
+  flow:established,to_server; content:"NTLMSSP"; \
+  classtype:policy-violation; sid:2100801; rev:1; \
+  metadata:mitre_technique_id T1557.001;)

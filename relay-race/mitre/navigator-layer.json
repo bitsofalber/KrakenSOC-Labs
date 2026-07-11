@@ -1,0 +1,12 @@
+{
+  "name": "Relay Race",
+  "versions": { "layer": "4.5", "navigator": "4.9.1" },
+  "domain": "enterprise-attack",
+  "description": "SMB/NTLM capture lab — KrakenSOC",
+  "techniques": [
+    { "techniqueID": "T1040", "score": 100, "comment": "Network Sniffing (captura del NTLM)" },
+    { "techniqueID": "T1557.001", "score": 100, "comment": "AiTM: LLMNR/NBT-NS/NTLM capture" },
+    { "techniqueID": "T1021.002", "score": 60, "comment": "SMB/Windows Admin Shares" }
+  ],
+  "gradient": { "colors": ["#ffffff", "#ff6666"], "minValue": 0, "maxValue": 100 }
+}

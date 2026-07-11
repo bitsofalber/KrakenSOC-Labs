@@ -1,0 +1,5 @@
+type,value,context
+credential,NORTHWIND\m.calloway,Usuario y dominio capturados en el handshake NTLMSSP
+auth,NTLMv2,Respuesta NTLMv2 (hash) capturable para crackeo o relay
+file,Payroll_Q4_2026.txt,Fichero del share SMB (sin cifrar) con un secreto
+port,445/tcp,Servicio SMB del servidor de ficheros

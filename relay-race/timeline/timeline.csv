@@ -1,0 +1,4 @@
+step,phase,description,mitre
+1,credential-access,Cliente se autentica al share por NTLM; el NTLMSSP_AUTH viaja por la red,T1557.001
+2,credential-access,La respuesta NTLMv2 (hash) queda capturada para crackeo/relay,T1040
+3,collection,Lectura de Payroll_Q4_2026.txt (SMB sin cifrar): el secreto queda expuesto,T1021.002

@@ -1,0 +1,27 @@
+# Definiciones de preguntas. Las RESPUESTAS NO van aqui — las gestiona KrakenSOC.
+lab: relay-race
+questions:
+  - id: Q1
+    prompt: "¿Que protocolo de fichero (y puerto) usa el cliente para acceder al share?"
+    type: short_text
+    points: 10
+  - id: Q2
+    prompt: "¿Que nombre de usuario se autentica en el share? (handshake NTLMSSP)"
+    type: short_text
+    points: 15
+  - id: Q3
+    prompt: "¿Que dominio (o workstation) presenta el cliente en el handshake NTLM?"
+    type: short_text
+    points: 15
+  - id: Q4
+    prompt: "¿Que mecanismo de autenticacion viaja en el handshake? (una palabra)"
+    type: short_text
+    points: 15
+  - id: Q5
+    prompt: "¿Que tecnica de MITRE ATT&CK describe capturar la autenticacion NTLM de la red? (formato Txxxx)"
+    type: short_text
+    points: 15
+  - id: Q6
+    prompt: "Sigue el SMB read del fichero del share y recupera el vault_token (la flag, formato NORTHWIND{...})."
+    type: flag
+    points: 30

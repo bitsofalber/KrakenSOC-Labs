@@ -1,0 +1,7 @@
+services:
+  smbserver:
+    build: ./runtime/smbserver
+  sniffer:
+    build: ./runtime/sniffer
+  client:
+    build: ./runtime/client
