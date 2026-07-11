@@ -10,3 +10,4 @@ Thumbs.db
 
 # Registro LOCAL de passphrases de soluciones (NUNCA al repo publico)
 LAB-SOLUTIONS.local.md
+tell-tale/**/__pycache__/
